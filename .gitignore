@@ -1,0 +1,17 @@
+/bin64
+/bin64/*
+/bin32
+/bin32/*
+
+/debug64
+/debug64/*
+/debug32
+/debug32/*
+
+/dll64
+/dll64/*
+/dll32
+/dll32/*
+
+/releases
+/releases/*
