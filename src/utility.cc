@@ -8,6 +8,17 @@
 #include <unistd.h>
 #endif
 
+#include "utility.h"
+
+SDL_Surface * sprites[4];
+
+SDL_Rect Vector2i::AsRect()
+{
+	SDL_Rect r;
+	r.x = x; r.y = y;
+	return r;
+}
+
 void os_path(char * path, int len)
 {
 	for (int i = 0; i < len; i++) {

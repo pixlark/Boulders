@@ -1,7 +1,7 @@
 import os
 import sys
 
-names = ["main", "utility"]
+names = ["main", "utility", "loader", "level"]
 include_dirs = [
 	"G:\\C\\.libraries\\SDL2_ttf-2.0.14\\include",
 	"G:\\C\\.libraries\\SDL2-2.0.7\\include",
