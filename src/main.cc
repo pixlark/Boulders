@@ -13,6 +13,12 @@
 
 TTF_Font * default_font;
 
+char * levels[2] = {
+	"0.lev",
+	"1.lev"
+};
+int lev_i = 0;
+
 int main()
 {
 	SDL_Init(SDL_INIT_VIDEO);
@@ -52,7 +58,7 @@ int main()
 		SDL_FreeSurface(grid_piece);
 	}
 
-	Level * level = load_level_from_file(find_path("0.lev", "levels"));
+	Level * level = load_level_from_file(find_path(levels[lev_i], "levels"));
 	if (level == NULL) {
 		printf("Invalid level file.\n");
 		return 1;
@@ -69,11 +75,10 @@ int main()
 			case SDL_KEYDOWN: {
 				switch(event.key.keysym.scancode) {
 				case SDL_SCANCODE_R:
-					printf("RESET\n");
 					level->Free();
 					free(level);
 					level = load_level_from_file(
-						find_path("0.lev", "levels"));
+						find_path(levels[lev_i], "levels"));
 					break;
 				}
 				// MOVEMENT
@@ -95,6 +100,13 @@ int main()
 					}
 				}
 				level->MovePlayer(to_pos);
+				if (level->loss == WON) {
+					lev_i++;
+					level->Free();
+					free(level);
+					level = load_level_from_file(
+						find_path(levels[lev_i], "levels"));
+				}
 			} break;
 			}
 		}

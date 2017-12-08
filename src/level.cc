@@ -56,6 +56,9 @@ void Level::RollBoulder(int i, Vector2i dir)
 		boulders[i].x = next.x;
 		boulders[i].y = next.y;
 	}
+	if (boulders[i].x == goal.x && boulders[i].y == goal.y) {
+		loss = WON;
+	}
 }
 
 bool Level::MovePlayer(Vector2i pos)

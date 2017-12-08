@@ -17,6 +17,7 @@ enum Sprite {
 
 enum LossCondition {
 	NONE,
+	WON,
 	BROKE_TRIANGLE
 };
 
