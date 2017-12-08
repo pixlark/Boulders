@@ -1,13 +1,18 @@
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "level.h"
 
 void Level::Alloc()
 {
 	boulders = (Vector2i*) malloc(sizeof(Vector2i) * boulder_num);
+	triangles = (Vector2i*) malloc(sizeof(Vector2i) * triangle_num);
 }
 
 void Level::Free()
 {
 	free(boulders);
+	free(triangles);
 }
 
 bool Level::InBounds(Vector2i pos)
@@ -26,6 +31,16 @@ int Level::BoulderAtPos(Vector2i pos)
 	return -1;
 }
 
+int Level::TriangleAtPos(Vector2i pos)
+{
+	for (int i = 0; i < triangle_num; i++) {
+		if (triangles[i].x == pos.x && triangles[i].y == pos.y) {
+			return i;
+		}
+	}
+	return -1;
+}
+
 void Level::RollBoulder(int i, Vector2i dir)
 {
 	while (1) {
@@ -34,6 +49,10 @@ void Level::RollBoulder(int i, Vector2i dir)
 		next.y = boulders[i].y + dir.y;
 		if (!InBounds(next)) break;
 		if (BoulderAtPos(next) != -1) break;
+		if (TriangleAtPos(next) != -1) {
+			loss = BROKE_TRIANGLE;
+			break;
+		}
 		boulders[i].x = next.x;
 		boulders[i].y = next.y;
 	}
@@ -56,6 +75,8 @@ bool Level::MovePlayer(Vector2i pos)
 			return false;
 		}
 	}
+	// Triangles
+	if (TriangleAtPos(pos) != -1) return false;
  move:
 	player.x = pos.x;
 	player.y = pos.y;
@@ -64,12 +85,15 @@ bool Level::MovePlayer(Vector2i pos)
 
 void Level::Draw(SDL_Surface * screen)
 {
+	// Draw player
 	SDL_Rect player_rect = player.AsRect();
 	player_rect.x *= 64; player_rect.y *= 64;
 	SDL_BlitSurface(sprites[PLAYER], NULL, screen, &player_rect);
+	// Draw goal
 	SDL_Rect goal_rect = goal.AsRect();
 	goal_rect.x *= 64; goal_rect.y *= 64;
 	SDL_BlitSurface(sprites[GOAL], NULL, screen, &goal_rect);
+	// Draw boulders
 	if (boulders != NULL) {
 		for (int i = 0; i < boulder_num; i++) {
 			SDL_Rect boulder_rect = boulders[i].AsRect();
@@ -77,7 +101,21 @@ void Level::Draw(SDL_Surface * screen)
 			SDL_BlitSurface(sprites[BOULDER], NULL, screen, &boulder_rect);
 		}
 	}
+	// Draw triangles
 	if (triangles != NULL) {
-		
+		for (int i = 0; i < triangle_num; i++) {
+			SDL_Rect triangle_rect = triangles[i].AsRect();
+			triangle_rect.x *= 64; triangle_rect.y *= 64;
+			SDL_BlitSurface(sprites[TRIANGLE], NULL, screen, &triangle_rect);
+		}
+	}
+	// Draw lose screen
+	switch (loss) {
+	case NONE:
+		break;
+	case BROKE_TRIANGLE:
+		SDL_BlitSurface(sprites[LOST], NULL, screen, NULL);
+		break;
 	}
 }
+

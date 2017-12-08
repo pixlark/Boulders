@@ -6,12 +6,18 @@
 
 #define GRID_SIZE 8
 
-enum Space {
+enum Sprite {
 	EMPTY,
 	PLAYER,
 	GOAL,
 	BOULDER,
-	TRIANGLE
+	TRIANGLE,
+	LOST
+};
+
+enum LossCondition {
+	NONE,
+	BROKE_TRIANGLE
 };
 
 struct Level {
@@ -21,10 +27,12 @@ struct Level {
 	int boulder_num;
 	Vector2i * triangles = NULL;
 	int triangle_num;
+	LossCondition loss = NONE;
 	void Alloc();
 	void Free();
 	bool InBounds(Vector2i pos);
 	int BoulderAtPos(Vector2i pos);
+	int TriangleAtPos(Vector2i pos);
 	void RollBoulder(int index, Vector2i dir);
 	bool MovePlayer(Vector2i pos);
 	void Draw(SDL_Surface * screen);

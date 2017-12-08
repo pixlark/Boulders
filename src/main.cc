@@ -11,10 +11,13 @@
 #include "loader.h"
 #include "utility.h"
 
+TTF_Font * default_font;
+
 int main()
 {
 	SDL_Init(SDL_INIT_VIDEO);
 	TTF_Init();
+	default_font = TTF_OpenFont(find_path("Inconsolata.otf", "resources"), 20);
 
 	SDL_Window * window = SDL_CreateWindow(
 		"Boulders",
@@ -27,6 +30,14 @@ int main()
 	sprites[BOULDER]  = SDL_LoadBMP(find_path("boulder.bmp",  "resources"));
 	sprites[GOAL]     = SDL_LoadBMP(find_path("goal.bmp",     "resources"));
 	sprites[TRIANGLE] = SDL_LoadBMP(find_path("triangle.bmp", "resources"));
+	{
+		SDL_Color tc;
+		tc.r = 0x00; tc.g = 0x00; tc.b = 0x00;
+		sprites[LOST] = TTF_RenderText_Blended(
+			default_font,
+			"You broke a triangle. R to restart.",
+			tc);
+	}
 
 	SDL_Surface * bg_surf = SDL_CreateRGBSurfaceWithFormat(0, GRID_SIZE * 64, GRID_SIZE * 64, 32, SDL_PIXELFORMAT_RGBA32);
 	{
@@ -56,11 +67,33 @@ int main()
 				running = false;
 				break;
 			case SDL_KEYDOWN: {
+				switch(event.key.keysym.scancode) {
+				case SDL_SCANCODE_R:
+					printf("RESET\n");
+					level->Free();
+					free(level);
+					level = load_level_from_file(
+						find_path("0.lev", "levels"));
+					break;
+				}
+				// MOVEMENT
 				Vector2i to_pos = level->player;
-				if      (event.key.keysym.scancode == SDL_SCANCODE_W) to_pos.y--;
-				else if (event.key.keysym.scancode == SDL_SCANCODE_S) to_pos.y++;
-				else if (event.key.keysym.scancode == SDL_SCANCODE_A) to_pos.x--;
-				else if (event.key.keysym.scancode == SDL_SCANCODE_D) to_pos.x++;
+				if (level->loss == NONE) {
+					switch (event.key.keysym.scancode) {
+					case SDL_SCANCODE_W:
+						to_pos.y--;
+						break;
+					case SDL_SCANCODE_S:
+						to_pos.y++;
+						break;
+					case SDL_SCANCODE_A:
+						to_pos.x--;
+						break;
+					case SDL_SCANCODE_D:
+						to_pos.x++;
+						break;
+					}
+				}
 				level->MovePlayer(to_pos);
 			} break;
 			}
