@@ -67,7 +67,6 @@ Level * load_level_from_file(char * path)
 			}
 		}
 		advance_line(level_file);
-		printf("\n");
 	}	
 	return level;
 }

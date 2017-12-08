@@ -40,16 +40,6 @@ int main()
 		}
 		SDL_FreeSurface(grid_piece);
 	}
-	
-	// Setup test level
-	/*
-	Level level;
-	level.player = Vector2i(0, 0);
-	level.goal = Vector2i(3, 3);
-	level.boulders = (Vector2i*) malloc(sizeof(Vector2i) * 2);
-	level.boulder_num = 2;
-	level.boulders[0] = Vector2i(2, 3);
-	level.boulders[1] = Vector2i(2, 5);*/
 
 	Level * level = load_level_from_file(find_path("0.lev", "levels"));
 	if (level == NULL) {
