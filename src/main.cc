@@ -13,9 +13,12 @@
 
 TTF_Font * default_font;
 
-char * levels[2] = {
-	"0.lev",
-	"1.lev"
+#define LEVEL_COUNT 3
+
+char * levels[LEVEL_COUNT] = {
+	"middle-goal.lev",
+	"basic-no-tri.lev",
+	"basic-tri.lev"
 };
 int lev_i = 0;
 
@@ -102,6 +105,7 @@ int main()
 				level->MovePlayer(to_pos);
 				if (level->loss == WON) {
 					lev_i++;
+					if (lev_i >= LEVEL_COUNT) return 0;
 					level->Free();
 					free(level);
 					level = load_level_from_file(
