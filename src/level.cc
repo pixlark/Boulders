@@ -109,10 +109,6 @@ void Level::Draw(SDL_Surface * screen)
 			}
 		}
 	}
-	// Draw player
-	SDL_Rect player_rect = player.AsRect();
-	player_rect.x *= 64; player_rect.y *= 64;
-	SDL_BlitSurface(sprites[PLAYER], NULL, screen, &player_rect);
 	// Draw goal
 	SDL_Rect goal_rect = goal.AsRect();
 	goal_rect.x *= 64; goal_rect.y *= 64;
@@ -133,6 +129,10 @@ void Level::Draw(SDL_Surface * screen)
 			SDL_BlitSurface(sprites[TRIANGLE], NULL, screen, &triangle_rect);
 		}
 	}
+	// Draw player
+	SDL_Rect player_rect = player.AsRect();
+	player_rect.x *= 64; player_rect.y *= 64;
+	SDL_BlitSurface(sprites[PLAYER], NULL, screen, &player_rect);
 	// Draw lose screen
 	switch (loss) {
 	case NONE:
