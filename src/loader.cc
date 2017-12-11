@@ -29,6 +29,7 @@ Level * load_level_from_file(char * path)
 		case '.':
 		case 'X':
 		case 'P':
+		case '-':
 		case '\n':
 			break;
 		case 'O':
@@ -64,6 +65,9 @@ Level * load_level_from_file(char * path)
 				break;
 			case 'P':
 				level->player = Vector2i(x, y);
+				break;
+			case '-':
+				level->walls[x + y * GRID_SIZE] = true;
 				break;
 			case 'T':
 				level->triangles[triangle_i++] = Vector2i(x, y);

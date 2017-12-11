@@ -8,6 +8,7 @@
 
 enum Sprite {
 	EMPTY,
+	WALL,
 	PLAYER,
 	GOAL,
 	BOULDER,
@@ -22,6 +23,7 @@ enum LossCondition {
 };
 
 struct Level {
+	bool walls[GRID_SIZE * GRID_SIZE];
 	Vector2i player;
 	Vector2i goal;
 	Vector2i * boulders = NULL;
@@ -34,6 +36,7 @@ struct Level {
 	bool InBounds(Vector2i pos);
 	int BoulderAtPos(Vector2i pos);
 	int TriangleAtPos(Vector2i pos);
+	bool WallAtPos(Vector2i pos);
 	void RollBoulder(int index, Vector2i dir);
 	bool MovePlayer(Vector2i pos);
 	void Draw(SDL_Surface * screen);

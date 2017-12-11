@@ -16,9 +16,9 @@ TTF_Font * default_font;
 #define LEVEL_COUNT 3
 
 char * levels[LEVEL_COUNT] = {
-	"middle-goal.lev",
 	"basic-no-tri.lev",
-	"basic-tri.lev"
+	"basic-tri.lev",
+	"middle-goal.lev"
 };
 int lev_i = 0;
 
@@ -39,6 +39,7 @@ int main()
 	sprites[BOULDER]  = SDL_LoadBMP(find_path("boulder.bmp",  "resources"));
 	sprites[GOAL]     = SDL_LoadBMP(find_path("goal.bmp",     "resources"));
 	sprites[TRIANGLE] = SDL_LoadBMP(find_path("triangle.bmp", "resources"));
+	sprites[WALL]     = SDL_LoadBMP(find_path("wall.bmp",     "resources"));
 	{
 		SDL_Color tc;
 		tc.r = 0x00; tc.g = 0x00; tc.b = 0x00;
