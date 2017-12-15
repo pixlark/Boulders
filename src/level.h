@@ -12,14 +12,12 @@ enum Sprite {
 	PLAYER,
 	GOAL,
 	BOULDER,
-	TRIANGLE,
 	LOST
 };
 
 enum LossCondition {
 	NONE,
 	WON,
-	BROKE_TRIANGLE
 };
 
 struct Level {
@@ -28,8 +26,6 @@ struct Level {
 	Vector2i goal;
 	Vector2i * boulders = NULL;
 	int boulder_num;
-	Vector2i * triangles = NULL;
-	int triangle_num;
 	LossCondition loss = NONE;
 	void Alloc();
 	void Free();

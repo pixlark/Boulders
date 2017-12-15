@@ -15,7 +15,6 @@ Level * load_level_from_file(char * path)
 	Level * level = (Level*) malloc(sizeof(Level));
 	level->loss = NONE;
 	level->boulder_num = 0;
-	level->triangle_num = 0;
 	FILE * level_file = fopen(path, "r");
 	if (level_file == NULL) {
 		free(level);
@@ -35,9 +34,6 @@ Level * load_level_from_file(char * path)
 		case 'O':
 			level->boulder_num++;
 			break;
-		case 'T':
-			level->triangle_num++;
-			break;
 		default:
 			free(level);
 			return NULL;
@@ -50,7 +46,6 @@ Level * load_level_from_file(char * path)
 	// Do shit
 	fseek(level_file, 0, SEEK_SET);
 	int boulder_i = 0;
-	int triangle_i = 0;
 	for (int y = 0; y < GRID_SIZE; y++) {
 		for (int x = 0; x < GRID_SIZE; x++) {
 			c = fgetc(level_file);
@@ -68,9 +63,6 @@ Level * load_level_from_file(char * path)
 				break;
 			case '-':
 				level->walls[x + y * GRID_SIZE] = true;
-				break;
-			case 'T':
-				level->triangles[triangle_i++] = Vector2i(x, y);
 				break;
 			default:
 				level->Free();

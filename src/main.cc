@@ -38,7 +38,6 @@ int main()
 	sprites[PLAYER]   = SDL_LoadBMP(find_path("player.bmp",   "resources"));
 	sprites[BOULDER]  = SDL_LoadBMP(find_path("boulder.bmp",  "resources"));
 	sprites[GOAL]     = SDL_LoadBMP(find_path("goal.bmp",     "resources"));
-	sprites[TRIANGLE] = SDL_LoadBMP(find_path("triangle.bmp", "resources"));
 	sprites[WALL]     = SDL_LoadBMP(find_path("wall.bmp",     "resources"));
 	{
 		SDL_Color tc;
