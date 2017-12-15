@@ -22,6 +22,7 @@ enum LossCondition {
 
 struct Level {
 	bool walls[GRID_SIZE * GRID_SIZE];
+	Vector2i player_exact;
 	Vector2i player;
 	Vector2i goal;
 	Vector2i * boulders = NULL;
@@ -34,7 +35,7 @@ struct Level {
 	int TriangleAtPos(Vector2i pos);
 	bool WallAtPos(Vector2i pos);
 	void RollBoulder(int index, Vector2i dir);
-	bool MovePlayer(Vector2i pos);
+	bool MovePlayer(Vector2i epos);
 	void Draw(SDL_Surface * screen);
 };
 

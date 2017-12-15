@@ -60,6 +60,7 @@ Level * load_level_from_file(char * path)
 				break;
 			case 'P':
 				level->player = Vector2i(x, y);
+				level->player_exact = Vector2i(x*64, y*64);
 				break;
 			case '-':
 				level->walls[x + y * GRID_SIZE] = true;

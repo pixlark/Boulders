@@ -55,8 +55,11 @@ void Level::RollBoulder(int i, Vector2i dir)
 	}
 }
 
-bool Level::MovePlayer(Vector2i pos)
+bool Level::MovePlayer(Vector2i epos)
 {
+	Vector2i pos;
+	pos.x = (int) (epos.x + 32) / 64;
+	pos.y = (int) (epos.y + 32) / 64;
 	// Walls
 	if (!InBounds(pos)) return false;
 	if (WallAtPos(pos)) return false;
@@ -74,6 +77,8 @@ bool Level::MovePlayer(Vector2i pos)
 		}
 	}
  move:
+	player_exact.x = epos.x;
+	player_exact.y = epos.y;
 	player.x = pos.x;
 	player.y = pos.y;
 	return true;
@@ -104,8 +109,7 @@ void Level::Draw(SDL_Surface * screen)
 		}
 	}
 	// Draw player
-	SDL_Rect player_rect = player.AsRect();
-	player_rect.x *= 64; player_rect.y *= 64;
+	SDL_Rect player_rect = player_exact.AsRect();
 	SDL_BlitSurface(sprites[PLAYER], NULL, screen, &player_rect);
 	// Draw lose screen
 	switch (loss) {
