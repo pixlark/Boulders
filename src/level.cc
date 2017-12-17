@@ -51,13 +51,15 @@ bool Level::MovePlayer(Vector2i pos)
 		Boulder * b = boulders + bi;
 		b->dir.x = pos.x - player.pos.x;
 		b->dir.y = pos.y - player.pos.y;
-		
+
+		RollBoulder(bi);
+		/*
 		b->drawable.Animate(
 			Vector2i(b->pos.x * 64, b->pos.y * 64),
 			Vector2i((b->pos.x + b->dir.x) * 64, (b->pos.y + b->dir.y) * 64)
 		);
 		b->pos.x += b->dir.x;
-		b->pos.y += b->dir.y;
+		b->pos.y += b->dir.y;*/
 		
 		if (BoulderAtPos(pos) == -1) {
 			goto move;
@@ -104,24 +106,30 @@ bool Drawable::UpdateAnim(int step)
 	return false;
 }
 
+void Level::RollBoulder(int i)
+{
+	Boulder * b = boulders + i;
+	Vector2i next;
+	next.x = b->pos.x + b->dir.x;
+	next.y = b->pos.y + b->dir.y;
+	if (InBounds(next) &&
+		!WallAtPos(next) &&
+		BoulderAtPos(next) == -1) {
+		b->drawable.Animate(
+			Vector2i(b->pos.x * 64, b->pos.y * 64),
+			Vector2i((b->pos.x + b->dir.x) * 64, (b->pos.y + b->dir.y) * 64)
+		);
+		b->pos.x += b->dir.x;
+		b->pos.y += b->dir.y;
+	}
+}
+
 void Level::Update()
 {
 	for (int i = 0; i < boulder_num; i++) {
 		Boulder * b = boulders + i;
 		if (b->drawable.UpdateAnim(2)) {
-			Vector2i next;
-			next.x = b->pos.x + b->dir.x;
-			next.y = b->pos.y + b->dir.y;
-			if (InBounds(next) &&
-				!WallAtPos(next) &&
-				BoulderAtPos(next) == -1) {
-				b->drawable.Animate(
-					Vector2i(b->pos.x * 64, b->pos.y * 64),
-					Vector2i((b->pos.x + b->dir.x) * 64, (b->pos.y + b->dir.y) * 64)
-				);
-				b->pos.x += b->dir.x;
-				b->pos.y += b->dir.y;
-			}
+			RollBoulder(i);
 		}
 		if (!b->drawable.animating) {
 			if (goal.x == b->pos.x && goal.y == b->pos.y) {

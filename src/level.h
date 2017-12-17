@@ -53,6 +53,7 @@ struct Level {
 	int BoulderAtPos(Vector2i pos);
 	int TriangleAtPos(Vector2i pos);
 	bool WallAtPos(Vector2i pos);
+	void RollBoulder(int i);
 	void Update();
 	bool MovePlayer(Vector2i epos);
 	void Draw(SDL_Surface * screen);
