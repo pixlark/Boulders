@@ -3,19 +3,19 @@ import sys
 
 names = ["main", "utility", "loader", "level"]
 include_dirs = [
-	"G:\\C\\.libraries\\SDL2_ttf-2.0.14\\include",
-	"G:\\C\\.libraries\\SDL2-2.0.7\\include",
-	"G:\\C\\.libraries\\SDL2_mixer-2.0.2\\include",
-	"G:\\C\\.libraries\\SDL2_image-2.0.2\\include"
+	"G:\\.libraries\\SDL2_ttf-2.0.14\\include",
+	"G:\\.libraries\\SDL2-2.0.7\\include",
+	"G:\\.libraries\\SDL2_mixer-2.0.2\\include",
+	"G:\\.libraries\\SDL2_image-2.0.2\\include"
 ]
 
 # DEPENDENCIES FOR 64-BIT
 dependencies64 = [
-	"G:\\C\\.libraries\\SDL2-2.0.7\\lib\\x64\\SDL2.lib",
-	"G:\\C\\.libraries\\SDL2-2.0.7\\lib\\x64\\SDL2main.lib",
-	"G:\\C\\.libraries\\SDL2_ttf-2.0.14\\lib\\x64\\SDL2_ttf.lib",
-	"G:\\C\\.libraries\\SDL2_mixer-2.0.2\\lib\\x64\\SDL2_mixer.lib",
-	"G:\\C\\.libraries\\SDL2_image-2.0.2\\lib\\x64\\SDL2_image.lib"
+	"G:\\.libraries\\SDL2-2.0.7\\lib\\x64\\SDL2.lib",
+	"G:\\.libraries\\SDL2-2.0.7\\lib\\x64\\SDL2main.lib",
+	"G:\\.libraries\\SDL2_ttf-2.0.14\\lib\\x64\\SDL2_ttf.lib",
+	"G:\\.libraries\\SDL2_mixer-2.0.2\\lib\\x64\\SDL2_mixer.lib",
+	"G:\\.libraries\\SDL2_image-2.0.2\\lib\\x64\\SDL2_image.lib"
 ]
 release_dependencies64 = [
 ]
@@ -24,11 +24,11 @@ debug_dependencies64 = [
 
 # DEPENDENCIES FOR 32-BIT
 dependencies32 = [
-	"G:\\C\\.libraries\\SDL2-2.0.7\\lib\\x86\\SDL2.lib",
-	"G:\\C\\.libraries\\SDL2-2.0.7\\lib\\x86\\SDL2main.lib",
-	"G:\\C\\.libraries\\SDL2_ttf-2.0.14\\lib\\x86\\SDL2_ttf.lib",
-	"G:\\C\\.libraries\\SDL2_mixer-2.0.2\\lib\\x86\\SDL2_mixer.lib",
-	"G:\\C\\.libraries\\SDL2_image-2.0.2\\lib\\x86\\SDL2_image.lib"
+	"G:\\.libraries\\SDL2-2.0.7\\lib\\x86\\SDL2.lib",
+	"G:\\.libraries\\SDL2-2.0.7\\lib\\x86\\SDL2main.lib",
+	"G:\\.libraries\\SDL2_ttf-2.0.14\\lib\\x86\\SDL2_ttf.lib",
+	"G:\\.libraries\\SDL2_mixer-2.0.2\\lib\\x86\\SDL2_mixer.lib",
+	"G:\\.libraries\\SDL2_image-2.0.2\\lib\\x86\\SDL2_image.lib"
 ]
 release_dependencies32 = [
 ]

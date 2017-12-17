@@ -5,7 +5,7 @@
 
 void Level::Alloc()
 {
-	boulders = (Vector2i*) malloc(sizeof(Vector2i) * boulder_num);
+	boulders = (Boulder*) malloc(sizeof(Boulder) * boulder_num);
 	for (int i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
 		walls[i] = false;
 	}
@@ -25,7 +25,7 @@ bool Level::InBounds(Vector2i pos)
 int Level::BoulderAtPos(Vector2i pos)
 {
 	for (int i = 0; i < boulder_num; i++) {
-		if (boulders[i].x == pos.x && boulders[i].y == pos.y) {
+		if (!boulders[i].drawable.animating && boulders[i].pos.x == pos.x && boulders[i].pos.y == pos.y) {
 			return i;
 		}
 	}
@@ -38,38 +38,27 @@ bool Level::WallAtPos(Vector2i pos)
 	return false;
 }
 
-void Level::RollBoulder(int i, Vector2i dir)
+bool Level::MovePlayer(Vector2i pos)
 {
-	while (1) {
-		Vector2i next;
-		next.x = boulders[i].x + dir.x;
-		next.y = boulders[i].y + dir.y;
-		if (!InBounds(next)) break;
-		if (BoulderAtPos(next) != -1) break;
-		if (WallAtPos(next)) break;
-		boulders[i].x = next.x;
-		boulders[i].y = next.y;
-	}
-	if (boulders[i].x == goal.x && boulders[i].y == goal.y) {
-		loss = WON;
-	}
-}
-
-bool Level::MovePlayer(Vector2i epos)
-{
-	Vector2i pos;
-	pos.x = (int) (epos.x + 32) / 64;
-	pos.y = (int) (epos.y + 32) / 64;
+	if (pos.x == player.pos.x && pos.y == player.pos.y) return false;
+	if (player.drawable.animating) return false;
 	// Walls
 	if (!InBounds(pos)) return false;
 	if (WallAtPos(pos)) return false;
 	// Boulders
-	int b = BoulderAtPos(pos);
-	if (b != -1) {
-		Vector2i dir;
-		dir.x = pos.x - player.x;
-		dir.y = pos.y - player.y;
-		RollBoulder(b, dir);
+	int bi = BoulderAtPos(pos);
+	if (bi != -1) {
+		Boulder * b = boulders + bi;
+		b->dir.x = pos.x - player.pos.x;
+		b->dir.y = pos.y - player.pos.y;
+		
+		b->drawable.Animate(
+			Vector2i(b->pos.x * 64, b->pos.y * 64),
+			Vector2i((b->pos.x + b->dir.x) * 64, (b->pos.y + b->dir.y) * 64)
+		);
+		b->pos.x += b->dir.x;
+		b->pos.y += b->dir.y;
+		
 		if (BoulderAtPos(pos) == -1) {
 			goto move;
 		} else {
@@ -77,11 +66,70 @@ bool Level::MovePlayer(Vector2i epos)
 		}
 	}
  move:
-	player_exact.x = epos.x;
-	player_exact.y = epos.y;
-	player.x = pos.x;
-	player.y = pos.y;
+	player.drawable.Animate(
+		Vector2i(player.pos.x * 64, player.pos.y * 64),
+		Vector2i(pos.x * 64, pos.y * 64)
+	);
+	player.pos.x = pos.x;
+	player.pos.y = pos.y;
 	return true;
+}
+
+void Drawable::Animate(Vector2i start, Vector2i end)
+{
+	this->start = start;
+	this->end = end;
+	animating = true;
+}
+
+bool Drawable::UpdateAnim(int step)
+{
+	if (animating) {
+		Vector2i dir;
+		/* TODO(pixlark) 
+		 * We want this is be able to arbitrarily animate to different
+		 * positions. At the moment it's limited to lateral moves
+		 * since I can't be bothered.
+		 *     -Paul T. Sun Dec 17 03:48:09 2017 */
+		dir.x = end.x - start.x;
+		dir.y = end.y - start.y;
+		epos.x += (dir.x / 64) * step;
+		epos.y += (dir.y / 64) * step;
+		if (epos.x == end.x && epos.y == end.y) {
+			printf("finished at pos %d %d\n", epos.x, epos.y);
+			animating = false;
+			return true;
+		}
+	}
+	return false;
+}
+
+void Level::Update()
+{
+	for (int i = 0; i < boulder_num; i++) {
+		Boulder * b = boulders + i;
+		if (b->drawable.UpdateAnim(2)) {
+			Vector2i next;
+			next.x = b->pos.x + b->dir.x;
+			next.y = b->pos.y + b->dir.y;
+			if (InBounds(next) &&
+				!WallAtPos(next) &&
+				BoulderAtPos(next) == -1) {
+				b->drawable.Animate(
+					Vector2i(b->pos.x * 64, b->pos.y * 64),
+					Vector2i((b->pos.x + b->dir.x) * 64, (b->pos.y + b->dir.y) * 64)
+				);
+				b->pos.x += b->dir.x;
+				b->pos.y += b->dir.y;
+			}
+		}
+		if (!b->drawable.animating) {
+			if (goal.x == b->pos.x && goal.y == b->pos.y) {
+				loss = WON;
+			}
+		}
+	}
+	player.drawable.UpdateAnim(2);
 }
 
 void Level::Draw(SDL_Surface * screen)
@@ -103,13 +151,13 @@ void Level::Draw(SDL_Surface * screen)
 	// Draw boulders
 	if (boulders != NULL) {
 		for (int i = 0; i < boulder_num; i++) {
-			SDL_Rect boulder_rect = boulders[i].AsRect();
-			boulder_rect.x *= 64; boulder_rect.y *= 64;
+			SDL_Rect boulder_rect = boulders[i].drawable.epos.AsRect();
 			SDL_BlitSurface(sprites[BOULDER], NULL, screen, &boulder_rect);
 		}
 	}
 	// Draw player
-	SDL_Rect player_rect = player_exact.AsRect();
+	//SDL_Rect player_rect = player_exact.AsRect();
+	SDL_Rect player_rect = player.drawable.epos.AsRect();
 	SDL_BlitSurface(sprites[PLAYER], NULL, screen, &player_rect);
 	// Draw lose screen
 	switch (loss) {

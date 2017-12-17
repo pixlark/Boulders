@@ -53,14 +53,18 @@ Level * load_level_from_file(char * path)
 			case '.':
 				break;
 			case 'O':
-				level->boulders[boulder_i++] = Vector2i(x, y);
+				level->boulders[boulder_i].pos = Vector2i(x, y);
+				level->boulders[boulder_i].drawable.epos = Vector2i(x * 64, y * 64);
+				level->boulders[boulder_i].drawable.animating = false;
+				boulder_i++;
 				break;
 			case 'X':
 				level->goal = Vector2i(x, y);
 				break;
 			case 'P':
-				level->player = Vector2i(x, y);
-				level->player_exact = Vector2i(x*64, y*64);
+				level->player.pos = Vector2i(x, y);
+				level->player.drawable.epos = Vector2i(x * 64, y * 64);
+				level->player.drawable.animating = false;
 				break;
 			case '-':
 				level->walls[x + y * GRID_SIZE] = true;

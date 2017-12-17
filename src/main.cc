@@ -14,9 +14,10 @@
 
 TTF_Font * default_font;
 
-#define LEVEL_COUNT 3
+#define LEVEL_COUNT 4
 
 char * levels[LEVEL_COUNT] = {
+	"gateway.lev",
 	"middle-goal.lev",
 	"basic-no-tri.lev",
 	"basic-tri.lev"
@@ -70,8 +71,8 @@ int main()
 	
 	SDL_Event event;
 	bool running = true;
-	Vector2i cdir(0, 0);
 	while (running) {
+		Vector2i cdir(0, 0);
 		if (SDL_PollEvent(&event) != 0) {
 			switch (event.type) {
 			case SDL_QUIT:
@@ -105,28 +106,12 @@ int main()
 				}
 			} break;
 			case SDL_KEYUP: {
-				if (level->loss == NONE) {
-					switch (event.key.keysym.scancode) {
-					case SDL_SCANCODE_W:
-						cdir.y = 0;
-						break;
-					case SDL_SCANCODE_S:
-						cdir.y = 0;
-						break;
-					case SDL_SCANCODE_A:
-						cdir.x = 0;
-						break;
-					case SDL_SCANCODE_D:
-						cdir.x = 0;
-						break;
-					}
-				}
 			} break;
 			}
 		}
-		Vector2i to_pos = level->player_exact;
-		to_pos.x += cdir.x * 1;
-		to_pos.y += cdir.y * 1;
+		Vector2i to_pos = level->player.pos;
+		to_pos.x += cdir.x;
+		to_pos.y += cdir.y;
 		level->MovePlayer(to_pos);
 		if (level->loss == WON) {
 			lev_i++;
@@ -136,6 +121,7 @@ int main()
 			level = load_level_from_file(
 				find_path(levels[lev_i], "levels"));
 		}
+		level->Update();
 		SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0, 0, 0));
 		SDL_BlitSurface(bg_surf, NULL, screen, NULL);
 		level->Draw(screen);

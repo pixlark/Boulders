@@ -20,12 +20,31 @@ enum LossCondition {
 	WON,
 };
 
+struct Drawable {
+	Vector2i start;
+	Vector2i end;
+	Vector2i epos;
+	bool animating = false;
+	void Animate(Vector2i start, Vector2i end);
+	bool UpdateAnim(int step);
+};
+
+struct Boulder {
+	Vector2i pos;
+	Vector2i dir;
+	Drawable drawable;
+};
+
+struct Player {
+	Vector2i pos;
+	Drawable drawable;
+};
+
 struct Level {
 	bool walls[GRID_SIZE * GRID_SIZE];
-	Vector2i player_exact;
-	Vector2i player;
+	Player player;
 	Vector2i goal;
-	Vector2i * boulders = NULL;
+	Boulder * boulders;
 	int boulder_num;
 	LossCondition loss = NONE;
 	void Alloc();
@@ -34,7 +53,7 @@ struct Level {
 	int BoulderAtPos(Vector2i pos);
 	int TriangleAtPos(Vector2i pos);
 	bool WallAtPos(Vector2i pos);
-	void RollBoulder(int index, Vector2i dir);
+	void Update();
 	bool MovePlayer(Vector2i epos);
 	void Draw(SDL_Surface * screen);
 };
