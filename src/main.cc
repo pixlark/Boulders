@@ -57,10 +57,11 @@ int main()
 		SDL_WINDOW_SHOWN);
 	SDL_Surface * screen = SDL_GetWindowSurface(window);
 
-	sprites[PLAYER]   = IMG_Load(find_path("player.png", "resources"));
+	sprites[PLAYER_LEFT]    = IMG_Load(find_path("player_left.png",  "resources"));
+	sprites[PLAYER_RIGHT]   = IMG_Load(find_path("player_right.png", "resources"));
 	sprites[BOULDER]  = IMG_Load(find_path("boulder.png", "resources"));
-	sprites[GOAL]     = IMG_Load(find_path("goal.png", "resources"));
-	sprites[WALL]     = IMG_Load(find_path("wall.png", "resources"));
+	sprites[GOAL]     = IMG_Load(find_path("goal.png",    "resources"));
+	sprites[WALL]     = IMG_Load(find_path("wall.png",    "resources"));
 	{
 		SDL_Color tc;
 		tc.r = 0x00; tc.g = 0x00; tc.b = 0x00;
@@ -101,6 +102,7 @@ int main()
 				running = false;
 				break;
 			case SDL_KEYDOWN: {
+				if (event.key.repeat) continue; 
 				switch(event.key.keysym.scancode) {
 				case SDL_SCANCODE_R:
 					level->Free();

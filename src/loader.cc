@@ -65,6 +65,7 @@ Level * load_level_from_file(char * path)
 				level->player.pos = Vector2i(x, y);
 				level->player.drawable.epos = Vector2i(x * 64, y * 64);
 				level->player.drawable.animating = false;
+				level->player.current_sprite = PLAYER_LEFT;
 				break;
 			case '-':
 				level->walls[x + y * GRID_SIZE] = true;

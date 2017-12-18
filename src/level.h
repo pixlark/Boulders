@@ -9,7 +9,8 @@
 enum Sprite {
 	EMPTY,
 	WALL,
-	PLAYER,
+	PLAYER_LEFT,
+	PLAYER_RIGHT,
 	GOAL,
 	BOULDER,
 	LOST
@@ -37,6 +38,7 @@ struct Boulder {
 
 struct Player {
 	Vector2i pos;
+	Sprite current_sprite;
 	Drawable drawable;
 };
 

@@ -42,6 +42,9 @@ bool Level::MovePlayer(Vector2i pos)
 {
 	if (pos.x == player.pos.x && pos.y == player.pos.y) return false;
 	if (player.drawable.animating) return false;
+	Vector2i dir;
+	dir.x = pos.x - player.pos.x;
+	dir.y = pos.y - player.pos.y;
 	// Walls
 	if (!InBounds(pos)) return false;
 	if (WallAtPos(pos)) return false;
@@ -49,9 +52,7 @@ bool Level::MovePlayer(Vector2i pos)
 	int bi = BoulderAtPos(pos);
 	if (bi != -1) {
 		Boulder * b = boulders + bi;
-		b->dir.x = pos.x - player.pos.x;
-		b->dir.y = pos.y - player.pos.y;
-
+		b->dir = dir;
 		RollBoulder(bi);
 		/*
 		b->drawable.Animate(
@@ -68,6 +69,12 @@ bool Level::MovePlayer(Vector2i pos)
 		}
 	}
  move:
+	if (dir.x > 0) {
+		player.current_sprite = PLAYER_RIGHT;
+	}
+	if (dir.x < 0) {
+		player.current_sprite = PLAYER_LEFT;
+	}
 	player.drawable.Animate(
 		Vector2i(player.pos.x * 64, player.pos.y * 64),
 		Vector2i(pos.x * 64, pos.y * 64)
@@ -166,7 +173,7 @@ void Level::Draw(SDL_Surface * screen)
 	// Draw player
 	//SDL_Rect player_rect = player_exact.AsRect();
 	SDL_Rect player_rect = player.drawable.epos.AsRect();
-	SDL_BlitSurface(sprites[PLAYER], NULL, screen, &player_rect);
+	SDL_BlitSurface(sprites[player.current_sprite], NULL, screen, &player_rect);
 	// Draw lose screen
 	switch (loss) {
 	case NONE:
