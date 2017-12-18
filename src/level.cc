@@ -99,6 +99,8 @@ bool Drawable::UpdateAnim(int step)
 		epos.x = start.x + (end.x - start.x) * t * step;
 		epos.y = start.y + (end.y - start.y) * t * step;
 		if (t >= 1.0 / step) {
+			epos.x = end.x;
+			epos.y = end.y;
 			animating = false;
 			return true;
 		}

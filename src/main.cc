@@ -101,6 +101,7 @@ int main()
 	}
 
 	Level * level = levels[lev_i]->Copy();
+	SDL_SetWindowTitle(window, level_names[lev_i]);
 	if (level == NULL) {
 		printf("Invalid level file.\n");
 		return 1;
@@ -166,6 +167,7 @@ int main()
 			level->Free();
 			free(level);
 			level = levels[lev_i]->Copy();
+			SDL_SetWindowTitle(window, level_names[lev_i]);
 		}
 		level->Update();
 		SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0, 0, 0));
