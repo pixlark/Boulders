@@ -65,6 +65,7 @@ struct Level {
 	void Update();
 	bool MovePlayer(Vector2i epos);
 	void Draw(SDL_Surface * screen);
+	Level * Copy();
 };
 
 #endif

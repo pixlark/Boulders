@@ -174,3 +174,15 @@ void Level::Draw(SDL_Surface * screen)
 	}
 }
 
+Level * Level::Copy()
+{
+	Level * ret = (Level*) malloc(sizeof(Level));
+	for (int i = 0; i < GRID_SIZE * GRID_SIZE; i++) ret->walls[i] = walls[i];
+	ret->player = player;
+	ret->goal = goal;
+	ret->boulders = (Boulder*) malloc(sizeof(Boulder) * boulder_num);
+	for (int i = 0; i < boulder_num; i++) ret->boulders[i] = boulders[i];
+	ret->boulder_num = boulder_num;
+	ret->loss = loss;
+	return ret;
+}

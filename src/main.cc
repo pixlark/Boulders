@@ -8,12 +8,13 @@ TTF_Font * default_font;
 
 #define LEVEL_COUNT 4
 
-char * levels[LEVEL_COUNT] = {
+char * level_names[LEVEL_COUNT] = {
 	"around.lev",
 	"no-walls-3.lev",
 	"no-walls-4.lev",
 	"gateway.lev"
 };
+Level * levels[LEVEL_COUNT];
 int lev_i = 0;
 
 struct MovQueue {
@@ -101,7 +102,11 @@ int main()
 		SDL_FreeSurface(grid_piece);
 	}
 
-	Level * level = load_level_from_file(find_path(levels[lev_i], "levels"));
+	for (int i = 0; i < LEVEL_COUNT; i++) {
+		levels[i] = load_level_from_file(find_path(level_names[lev_i], "levels"));
+	}
+	
+	Level * level = levels[lev_i]->Copy();
 	if (level == NULL) {
 		printf("Invalid level file.\n");
 		return 1;
@@ -125,8 +130,7 @@ int main()
 				case SDL_SCANCODE_R:
 					level->Free();
 					free(level);
-					level = load_level_from_file(
-						find_path(levels[lev_i], "levels"));
+					level = levels[lev_i]->Copy();
 					break;
 				}
 				// MOVEMENT
@@ -167,8 +171,7 @@ int main()
 			if (lev_i >= LEVEL_COUNT) return 0;
 			level->Free();
 			free(level);
-			level = load_level_from_file(
-				find_path(levels[lev_i], "levels"));
+			level = levels[lev_i]->Copy();
 		}
 		level->Update();
 		SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0, 0, 0));
