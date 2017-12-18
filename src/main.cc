@@ -1,12 +1,4 @@
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-#define SDL_MAIN_HANDLED
-#include <SDL.h>
-#include <SDL_ttf.h>
-#include <SDL_mixer.h>
-#include <SDL_image.h>
+#include "stdafx.h"
 
 #include "level.h"
 #include "loader.h"
@@ -44,8 +36,18 @@ Vector2i mov_queue_pop(MovQueue ** queue)
 	return ret;
 }
 
-int main()
+void version_check()
 {
+	SDL_version compiled;
+	SDL_version linked;
+	SDL_VERSION(&compiled);
+	SDL_GetVersion(&linked);
+	printf("Compiled against SDL version %d.%d.%d\n", compiled.major, compiled.minor, compiled.patch);
+	printf("Linked against SDL version %d.%d.%d\n", linked.major, linked.minor, linked.patch);
+}
+
+int main()
+{	
 	SDL_Init(SDL_INIT_VIDEO);
 	TTF_Init();
 	default_font = TTF_OpenFont(find_path("Inconsolata.otf", "resources"), 20);

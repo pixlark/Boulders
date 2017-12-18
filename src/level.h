@@ -1,6 +1,8 @@
 #ifndef BOULDER_LEVEL_H
 #define BOULDER_LEVEL_H
 
+#include "stdafx.h"
+
 #include "level.h"
 #include "utility.h"
 
