@@ -2,6 +2,7 @@
 #define BOULDERS_STDAFX_H
 
 #include <assert.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 

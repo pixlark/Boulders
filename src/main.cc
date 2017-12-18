@@ -46,8 +46,19 @@ void version_check()
 	printf("Linked against SDL version %d.%d.%d\n", linked.major, linked.minor, linked.patch);
 }
 
+int load_sprite(Sprite index, char * name)
+{
+	sprites[index] = IMG_Load(find_path(name, "resources"));
+	if (sprites[index] == NULL) {
+		fprintf(stderr, "Image '%s' did not load correctly.\n", name);
+		return 1;
+	}
+	return 0;
+}
+
 int main()
-{	
+{
+	version_check();
 	SDL_Init(SDL_INIT_VIDEO);
 	TTF_Init();
 	default_font = TTF_OpenFont(find_path("Inconsolata.otf", "resources"), 20);
@@ -57,25 +68,29 @@ int main()
 		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 		GRID_SIZE * 64, GRID_SIZE * 64,
 		SDL_WINDOW_SHOWN);
-	SDL_Surface * screen = SDL_GetWindowSurface(window);
-
-	sprites[PLAYER_LEFT]    = IMG_Load(find_path("player_left.png",  "resources"));
-	sprites[PLAYER_RIGHT]   = IMG_Load(find_path("player_right.png", "resources"));
-	sprites[BOULDER]  = IMG_Load(find_path("boulder.png", "resources"));
-	sprites[GOAL]     = IMG_Load(find_path("goal.png",    "resources"));
-	sprites[WALL]     = IMG_Load(find_path("wall.png",    "resources"));
-	{
-		SDL_Color tc;
-		tc.r = 0x00; tc.g = 0x00; tc.b = 0x00;
-		sprites[LOST] = TTF_RenderText_Blended(
-			default_font,
-			"You broke a triangle. R to restart.",
-			tc);
+	if (window == NULL) {
+		fprintf(stderr, "Could not create window.\n");
+		return 1;
 	}
+	SDL_Surface * screen = SDL_GetWindowSurface(window);
+	if (screen == NULL) {
+		fprintf(stderr, "Count not retrieve screen surface.\n");
+		return 1;
+	}
+
+	if (load_sprite(PLAYER_LEFT,  "player_left.png")  != 0) return 1;
+	if (load_sprite(PLAYER_RIGHT, "player_right.png") != 0) return 1;
+	if (load_sprite(BOULDER,      "boulder.png")      != 0) return 1;
+	if (load_sprite(GOAL,         "goal.png")         != 0) return 1;
+	if (load_sprite(WALL,         "wall.png")         != 0) return 1;
 
 	SDL_Surface * bg_surf = SDL_CreateRGBSurfaceWithFormat(0, GRID_SIZE * 64, GRID_SIZE * 64, 32, SDL_PIXELFORMAT_RGBA32);
 	{
 		SDL_Surface * grid_piece = IMG_Load(find_path("bg.png", "resources"));
+		if (grid_piece == NULL) {
+			fprintf(stderr, "Could not load background tile image.\n");
+			return 1;
+		}
 		for (int i = 0; i < GRID_SIZE; i++) {
 			for (int j = 0; j < GRID_SIZE; j++) {
 				SDL_Rect pos;
@@ -91,9 +106,10 @@ int main()
 		printf("Invalid level file.\n");
 		return 1;
 	}
-
-	MovQueue * mov_queue = NULL;
 	
+	MovQueue * mov_queue = NULL;
+
+	init_delta_time();
 	SDL_Event event;
 	bool running = true;
 	while (running) {
@@ -159,6 +175,7 @@ int main()
 		SDL_BlitSurface(bg_surf, NULL, screen, NULL);
 		level->Draw(screen);
 		SDL_UpdateWindowSurface(window);
+		update_delta_time();
 	}
 	return 0;
 }

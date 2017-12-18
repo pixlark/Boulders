@@ -1,7 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #if defined(_WIN32) || defined(_WIN64)
 #include <Windows.h>
 #else
@@ -10,7 +6,8 @@
 
 #include "utility.h"
 
-SDL_Surface * sprites[4];
+double delta_time;
+uint64_t last_count;
 
 SDL_Rect Vector2i::AsRect()
 {
@@ -54,4 +51,17 @@ char * find_path(char * name, char * directory)
 	strcat(buffer, name);
 	os_path(buffer, strlen(buffer));
 	return buffer;
+}
+
+void update_delta_time()
+{
+	uint64_t count = SDL_GetPerformanceCounter();
+	delta_time = (double) (count - last_count) / SDL_GetPerformanceFrequency();
+	last_count = count;
+}
+
+void init_delta_time()
+{
+	last_count = SDL_GetPerformanceCounter();
+	delta_time = 60.0 / SDL_GetPerformanceFrequency();
 }

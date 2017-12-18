@@ -1,5 +1,7 @@
 #include "level.h"
 
+SDL_Surface * sprites[SPRITE_COUNT];
+
 void Level::Alloc()
 {
 	boulders = (Boulder*) malloc(sizeof(Boulder) * boulder_num);
@@ -85,6 +87,7 @@ void Drawable::Animate(Vector2i start, Vector2i end)
 {
 	this->start = start;
 	this->end = end;
+	this->t = 0;
 	animating = true;
 }
 
@@ -92,17 +95,10 @@ bool Drawable::UpdateAnim(int step)
 {
 	if (animating) {
 		Vector2i dir;
-		/* TODO(pixlark) 
-		 * We want this is be able to arbitrarily animate to different
-		 * positions. At the moment it's limited to lateral moves
-		 * since I can't be bothered.
-		 *     -Paul T. Sun Dec 17 03:48:09 2017 */
-		dir.x = end.x - start.x;
-		dir.y = end.y - start.y;
-		epos.x += (dir.x / 64) * step;
-		epos.y += (dir.y / 64) * step;
-		if (epos.x == end.x && epos.y == end.y) {
-			printf("finished at pos %d %d\n", epos.x, epos.y);
+		t += delta_time;
+		epos.x = start.x + (end.x - start.x) * t * step;
+		epos.y = start.y + (end.y - start.y) * t * step;
+		if (t >= 1.0 / step) {
 			animating = false;
 			return true;
 		}
@@ -132,7 +128,7 @@ void Level::Update()
 {
 	for (int i = 0; i < boulder_num; i++) {
 		Boulder * b = boulders + i;
-		if (b->drawable.UpdateAnim(2)) {
+		if (b->drawable.UpdateAnim(3)) {
 			RollBoulder(i);
 		}
 		if (!b->drawable.animating) {
@@ -141,7 +137,7 @@ void Level::Update()
 			}
 		}
 	}
-	player.drawable.UpdateAnim(2);
+	player.drawable.UpdateAnim(3);
 }
 
 void Level::Draw(SDL_Surface * screen)

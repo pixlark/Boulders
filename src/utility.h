@@ -1,9 +1,10 @@
 #ifndef BOULDER_UTILITY_H
 #define BOULDER_UTILITY_H
 
-#include <SDL.h>
+#include "stdafx.h"
 
-extern SDL_Surface * sprites[4];
+extern double delta_time;
+extern uint64_t last_count;
 
 struct Vector2f {
 	float x;
@@ -30,5 +31,8 @@ struct Color {
 
 void os_path(char * path, int len);
 char * find_path(char * name, char * directory);
+
+void update_delta_time();
+void init_delta_time();
 
 #endif

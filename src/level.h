@@ -8,6 +8,7 @@
 
 #define GRID_SIZE 8
 
+#define SPRITE_COUNT 7
 enum Sprite {
 	EMPTY,
 	WALL,
@@ -18,6 +19,8 @@ enum Sprite {
 	LOST
 };
 
+extern SDL_Surface * sprites[SPRITE_COUNT];
+
 enum LossCondition {
 	NONE,
 	WON,
@@ -26,6 +29,7 @@ enum LossCondition {
 struct Drawable {
 	Vector2i start;
 	Vector2i end;
+	float t;
 	Vector2i epos;
 	bool animating = false;
 	void Animate(Vector2i start, Vector2i end);
