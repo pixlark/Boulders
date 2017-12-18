@@ -17,10 +17,10 @@ TTF_Font * default_font;
 #define LEVEL_COUNT 4
 
 char * levels[LEVEL_COUNT] = {
-	"gateway.lev",
 	"middle-goal.lev",
 	"basic-no-tri.lev",
-	"basic-tri.lev"
+	"basic-tri.lev",
+	"gateway.lev"
 };
 int lev_i = 0;
 
