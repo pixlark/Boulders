@@ -128,7 +128,7 @@ void Level::Update()
 {
 	for (int i = 0; i < boulder_num; i++) {
 		Boulder * b = boulders + i;
-		if (b->drawable.UpdateAnim(3)) {
+		if (b->drawable.UpdateAnim(5)) {
 			RollBoulder(i);
 		}
 		if (!b->drawable.animating) {
@@ -137,7 +137,7 @@ void Level::Update()
 			}
 		}
 	}
-	player.drawable.UpdateAnim(3);
+	player.drawable.UpdateAnim(5);
 }
 
 void Level::Draw(SDL_Surface * screen)
