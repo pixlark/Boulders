@@ -24,6 +24,26 @@ char * levels[LEVEL_COUNT] = {
 };
 int lev_i = 0;
 
+struct MovQueue {
+	Vector2i mov;
+	MovQueue * last;
+};
+
+void mov_queue_push(MovQueue ** queue, Vector2i mov)
+{
+	MovQueue * next = (MovQueue*) malloc(sizeof(MovQueue));
+	next->mov  = mov;
+	next->last = *queue;
+	*queue = next;
+}
+
+Vector2i mov_queue_pop(MovQueue ** queue)
+{
+	Vector2i ret = (*queue)->mov;
+	*queue = (*queue)->last;
+	return ret;
+}
+
 int main()
 {
 	SDL_Init(SDL_INIT_VIDEO);
@@ -68,6 +88,8 @@ int main()
 		printf("Invalid level file.\n");
 		return 1;
 	}
+
+	MovQueue * mov_queue = NULL;
 	
 	SDL_Event event;
 	bool running = true;
@@ -109,10 +131,17 @@ int main()
 			} break;
 			}
 		}
-		Vector2i to_pos = level->player.pos;
-		to_pos.x += cdir.x;
-		to_pos.y += cdir.y;
-		level->MovePlayer(to_pos);
+		if (cdir.x != 0 || cdir.y != 0) {
+			mov_queue_push(&mov_queue, cdir);
+		}
+		if (!level->player.drawable.animating && mov_queue != NULL) {
+			Vector2i dir;
+			dir = mov_queue_pop(&mov_queue);
+			Vector2i to_pos = level->player.pos;
+			to_pos.x += dir.x;
+			to_pos.y += dir.y;
+			level->MovePlayer(to_pos);
+		}
 		if (level->loss == WON) {
 			lev_i++;
 			if (lev_i >= LEVEL_COUNT) return 0;
