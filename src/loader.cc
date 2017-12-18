@@ -6,6 +6,19 @@ static inline void advance_line(FILE * file)
 	while ((c = fgetc(file)) != '\n' && c != EOF);
 }
 
+char ** load_level_names(char * path, int * count)
+{
+	FILE * index_file = fopen(path, "r");
+	fscanf(index_file, "%d", count);
+	fgetc(index_file);
+	char ** names = (char**) malloc(sizeof(char*) * *count);
+	for (int i = 0; i < *count; i++) {
+		names[i] = (char*) malloc(sizeof(char) * 512);
+		fscanf(index_file, "%s", names[i]);
+	}
+	return names;
+}
+
 Level * load_level_from_file(char * path)
 {
 	Level * level = (Level*) malloc(sizeof(Level));

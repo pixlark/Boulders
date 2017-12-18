@@ -6,17 +6,6 @@
 
 TTF_Font * default_font;
 
-#define LEVEL_COUNT 4
-
-char * level_names[LEVEL_COUNT] = {
-	"around.lev",
-	"no-walls-3.lev",
-	"no-walls-4.lev",
-	"gateway.lev"
-};
-Level * levels[LEVEL_COUNT];
-int lev_i = 0;
-
 struct MovQueue {
 	Vector2i mov;
 	MovQueue * last;
@@ -102,10 +91,15 @@ int main()
 		SDL_FreeSurface(grid_piece);
 	}
 
-	for (int i = 0; i < LEVEL_COUNT; i++) {
-		levels[i] = load_level_from_file(find_path(level_names[lev_i], "levels"));
-	}
+	int level_count;
+	int lev_i = 0;
+	char ** level_names = load_level_names(find_path("index", "levels"), &level_count);
+	Level ** levels = (Level**) malloc(sizeof(Level*) * level_count);
 	
+	for (int i = 0; i < level_count; i++) {
+		levels[i] = load_level_from_file(find_path(level_names[i], "levels"));
+	}
+
 	Level * level = levels[lev_i]->Copy();
 	if (level == NULL) {
 		printf("Invalid level file.\n");
@@ -168,7 +162,7 @@ int main()
 		}
 		if (level->loss == WON) {
 			lev_i++;
-			if (lev_i >= LEVEL_COUNT) return 0;
+			if (lev_i >= level_count) return 0;
 			level->Free();
 			free(level);
 			level = levels[lev_i]->Copy();
