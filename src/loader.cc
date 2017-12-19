@@ -31,13 +31,17 @@ Level * load_level_from_file(char * path)
 	}
 	char c;
 	
-	// Count shit
+	// Count stuff
 	while ((c = fgetc(level_file)) != EOF) {
 		switch(c) {
 		case '.':
 		case 'X':
 		case 'P':
 		case '-':
+		case '>':
+		case '<':
+		case '^':
+		case 'v':
 		case '\n':
 			break;
 		case 'O':
@@ -52,7 +56,7 @@ Level * load_level_from_file(char * path)
 
 	level->Alloc();
 	
-	// Do shit
+	// Do stuff
 	fseek(level_file, 0, SEEK_SET);
 	int boulder_i = 0;
 	for (int y = 0; y < GRID_SIZE; y++) {
@@ -78,6 +82,18 @@ Level * load_level_from_file(char * path)
 				break;
 			case '-':
 				level->walls[x + y * GRID_SIZE] = true;
+				break;
+			case '>':
+				level->arrows[x + y * GRID_SIZE] = D_RIGHT;
+				break;
+			case '<':
+				level->arrows[x + y * GRID_SIZE] = D_LEFT;
+				break;
+			case '^':
+				level->arrows[x + y * GRID_SIZE] = D_UP;
+				break;
+			case 'v':
+				level->arrows[x + y * GRID_SIZE] = D_DOWN;
 				break;
 			default:
 				level->Free();

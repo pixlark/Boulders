@@ -73,6 +73,10 @@ int main()
 	if (load_sprite(BOULDER,      "boulder.png")      != 0) return 1;
 	if (load_sprite(GOAL,         "goal.png")         != 0) return 1;
 	if (load_sprite(WALL,         "wall.png")         != 0) return 1;
+	if (load_sprite(UP_ARROW,     "upwards.png")      != 0) return 1;
+	if (load_sprite(LEFT_ARROW,   "left.png")         != 0) return 1;
+	if (load_sprite(DOWN_ARROW,   "down.png")         != 0) return 1;
+	if (load_sprite(RIGHT_ARROW,  "right.png")        != 0) return 1;
 
 	SDL_Surface * bg_surf = SDL_CreateRGBSurfaceWithFormat(0, GRID_SIZE * 64, GRID_SIZE * 64, 32, SDL_PIXELFORMAT_RGBA32);
 	{
@@ -105,6 +109,13 @@ int main()
 	if (level == NULL) {
 		printf("Invalid level file.\n");
 		return 1;
+	}
+
+	for (int y = 0; y < GRID_SIZE; y++) {
+		for (int x = 0; x < GRID_SIZE; x++) {
+			printf("% 2d ", level->arrows[x + y*GRID_SIZE]);
+		}
+		printf("\n");
 	}
 	
 	MovQueue * mov_queue = NULL;

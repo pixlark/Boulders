@@ -8,15 +8,24 @@
 
 #define GRID_SIZE 8
 
-#define SPRITE_COUNT 7
+#define SPRITE_COUNT 9
 enum Sprite {
-	EMPTY,
 	WALL,
 	PLAYER_LEFT,
 	PLAYER_RIGHT,
 	GOAL,
 	BOULDER,
-	LOST
+	UP_ARROW,
+	LEFT_ARROW,
+	DOWN_ARROW,
+	RIGHT_ARROW
+};
+
+enum Directions {
+	D_UP = 0,
+	D_LEFT,
+	D_DOWN,
+	D_RIGHT
 };
 
 extern SDL_Surface * sprites[SPRITE_COUNT];
@@ -55,6 +64,7 @@ struct Level {
 	Boulder * boulders;
 	int boulder_num;
 	LossCondition loss = NONE;
+	int arrows[GRID_SIZE * GRID_SIZE];
 	void Alloc();
 	void Free();
 	bool InBounds(Vector2i pos);
