@@ -168,9 +168,7 @@ void draw_tile(SDL_Surface * screen, SDL_Surface * tile, int x, int y)
 {
 	SDL_Rect blit_rect;
 	blit_rect.x = x * SCALE_FACTOR; blit_rect.y = y * SCALE_FACTOR;
-	blit_rect.w = tile->w * SCALE_FACTOR;
-	blit_rect.h = tile->h * SCALE_FACTOR;
-	SDL_BlitScaled(tile, NULL, screen, &blit_rect);
+	SDL_BlitSurface(tile, NULL, screen, &blit_rect);
 }
 
 void Level::Draw(SDL_Surface * screen)

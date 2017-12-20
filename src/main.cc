@@ -46,8 +46,26 @@ int load_sprite(Sprite index, char * name)
 	return 0;
 }
 
+void scale_sprites(SDL_Surface * screen)
+{
+	for (int i = 0; i < SPRITE_COUNT; i++) {
+		SDL_Surface * tile = sprites[i];
+		SDL_Surface * new_sprite = SDL_CreateRGBSurfaceWithFormat(
+			0, tile->w * SCALE_FACTOR, tile->h * SCALE_FACTOR,
+			32, tile->format->format);
+		SDL_Rect blit_rect;
+		blit_rect.x = 0;
+		blit_rect.y = 0;
+		blit_rect.w = tile->w * SCALE_FACTOR;
+		blit_rect.h = tile->h * SCALE_FACTOR;
+		SDL_BlitScaled(tile, NULL, new_sprite, &blit_rect);
+		SDL_FreeSurface(tile);
+		sprites[i] = new_sprite;
+	}
+}
+
 /* Average FPS with real-time scaling: 34.975
- *
+ * Average FPS with pre-scaling:       36.336
  */
 
 int main(int argc, char ** argv)
@@ -60,10 +78,10 @@ int main(int argc, char ** argv)
 	float  bench_time   = 10.0;
 	double bench_acc    = 0.0;
 	int    bench_count  = 0;
-	bool benchmarking = false;
+	bool   benchmarking = false;
 	if (argc > 1 && strcmp(argv[1], "benchmark") == 0) {
 		printf("Benchmarking...\n");
-		bool benchmarking = true;
+		benchmarking = true;
 	}
 	
 	SDL_Window * window = SDL_CreateWindow(
@@ -81,16 +99,18 @@ int main(int argc, char ** argv)
 		return 1;
 	}
 
-	if (load_sprite(PLAYER_LEFT,  "16\\player.png")  != 0) return 1;
-	if (load_sprite(PLAYER_RIGHT, "16\\player.png") != 0) return 1;
-	if (load_sprite(BOULDER,      "16\\boulder.png")      != 0) return 1;
-	if (load_sprite(GOAL,         "16\\goal.png")         != 0) return 1;
-	if (load_sprite(WALL,         "16\\wall.png")         != 0) return 1;
-	if (load_sprite(UP_ARROW, "16\\up_arrow.png") != 0) return 1;
-	if (load_sprite(LEFT_ARROW, "16\\left_arrow.png") != 0) return 1;
-	if (load_sprite(DOWN_ARROW, "16\\down_arrow.png") != 0) return 1;
-	if (load_sprite(RIGHT_ARROW, "16\\right_arrow.png") != 0) return 1;
+	if (load_sprite(PLAYER_LEFT,  "16\\player.png")      != 0) return 1;
+	if (load_sprite(PLAYER_RIGHT, "16\\player.png")      != 0) return 1;
+	if (load_sprite(BOULDER,      "16\\boulder.png")     != 0) return 1;
+	if (load_sprite(GOAL,         "16\\goal.png")        != 0) return 1;
+	if (load_sprite(WALL,         "16\\wall.png")        != 0) return 1;
+	if (load_sprite(UP_ARROW,     "16\\up_arrow.png")    != 0) return 1;
+	if (load_sprite(LEFT_ARROW,   "16\\left_arrow.png")  != 0) return 1;
+	if (load_sprite(DOWN_ARROW,   "16\\down_arrow.png")  != 0) return 1;
+	if (load_sprite(RIGHT_ARROW,  "16\\right_arrow.png") != 0) return 1;
 
+	scale_sprites(screen);
+	
 	SDL_Surface * bg_surf = SDL_CreateRGBSurfaceWithFormat(
 		0, GRID_SIZE * TILE_SIZE * SCALE_FACTOR, GRID_SIZE * TILE_SIZE * SCALE_FACTOR, 32, SDL_PIXELFORMAT_RGBA32);
 	{
@@ -212,13 +232,16 @@ int main(int argc, char ** argv)
 		}
 		SDL_UpdateWindowSurface(window);
 		update_delta_time();
-		bench_time  -= delta_time;
-		bench_acc   += 1 / delta_time;
-		bench_count += 1;
-		printf("%2.2f\r", bench_time);
-		if (bench_time <= 0) {
-			printf("Average FPS: %f\n", bench_acc / bench_count);
-			break;
+		if (benchmarking) {
+			bench_time  -= delta_time;
+			bench_acc   += 1 / delta_time;
+			bench_count += 1;
+			printf("%2.2f\r", bench_time);
+			fflush(stdout);
+			if (bench_time <= 0) {
+				printf("\nAverage FPS: %f\n", bench_acc / bench_count);
+				break;
+			}
 		}
 	}
 	return 0;
