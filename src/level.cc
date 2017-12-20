@@ -163,48 +163,52 @@ void Level::Update()
 	player.drawable.UpdateAnim(5);
 }
 
+// Assumes you've scaled your coordinates to real position by tile size
+void draw_tile(SDL_Surface * screen, SDL_Surface * tile, int x, int y)
+{
+	SDL_Rect blit_rect;
+	blit_rect.x = x * SCALE_FACTOR; blit_rect.y = y * SCALE_FACTOR;
+	blit_rect.w = tile->w * SCALE_FACTOR;
+	blit_rect.h = tile->h * SCALE_FACTOR;
+	SDL_BlitScaled(tile, NULL, screen, &blit_rect);
+}
+
 void Level::Draw(SDL_Surface * screen)
 {
 	// Draw walls and arrows
 	for (int y = 0; y < GRID_SIZE; y++) {
 		for (int x = 0; x < GRID_SIZE; x++) {
-			SDL_Rect blit_rect;
-			blit_rect.x = x * 64; blit_rect.y = y * 64;
 			if (arrows[x + y*GRID_SIZE] != -1) {
 				switch (arrows[x + y*GRID_SIZE]) {
 				case D_UP:
-					SDL_BlitSurface(sprites[UP_ARROW], NULL, screen, &blit_rect);
+					draw_tile(screen, sprites[UP_ARROW], x * TILE_SIZE, y * TILE_SIZE);
 					break;
 				case D_LEFT:
-					SDL_BlitSurface(sprites[LEFT_ARROW], NULL, screen, &blit_rect);
+					draw_tile(screen, sprites[LEFT_ARROW], x * TILE_SIZE, y * TILE_SIZE);
 					break;
 				case D_DOWN:
-					SDL_BlitSurface(sprites[DOWN_ARROW], NULL, screen, &blit_rect);
+					draw_tile(screen, sprites[DOWN_ARROW], x * TILE_SIZE, y * TILE_SIZE);
 					break;
 				case D_RIGHT:
-					SDL_BlitSurface(sprites[RIGHT_ARROW], NULL, screen, &blit_rect);
+					draw_tile(screen, sprites[RIGHT_ARROW], x * TILE_SIZE, y * TILE_SIZE);
 					break;
 				}
 			}
 			if (walls[x + y*GRID_SIZE] == true) {
-				SDL_BlitSurface(sprites[WALL], NULL, screen, &blit_rect);
+				draw_tile(screen, sprites[WALL], x * TILE_SIZE, y * TILE_SIZE);
 			}
 		}
 	}
 	// Draw goal
-	SDL_Rect goal_rect = goal.AsRect();
-	goal_rect.x *= TILE_SIZE; goal_rect.y *= TILE_SIZE;
-	SDL_BlitSurface(sprites[GOAL], NULL, screen, &goal_rect);
+	draw_tile(screen, sprites[GOAL], goal.x * TILE_SIZE, goal.y * TILE_SIZE);
 	// Draw boulders
 	if (boulders != NULL) {
 		for (int i = 0; i < boulder_num; i++) {
-			SDL_Rect boulder_rect = boulders[i].drawable.epos.AsRect();
-			SDL_BlitSurface(sprites[BOULDER], NULL, screen, &boulder_rect);
+			draw_tile(screen, sprites[BOULDER], boulders[i].drawable.epos.x, boulders[i].drawable.epos.y);
 		}
 	}
 	// Draw player
-	SDL_Rect player_rect = player.drawable.epos.AsRect();
-	SDL_BlitSurface(sprites[player.current_sprite], NULL, screen, &player_rect);
+	draw_tile(screen, sprites[player.current_sprite], player.drawable.epos.x, player.drawable.epos.y);
 }
 
 Level * Level::Copy()

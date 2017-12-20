@@ -56,7 +56,7 @@ int main()
 	SDL_Window * window = SDL_CreateWindow(
 		"Boulders",
 		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-		GRID_SIZE * TILE_SIZE, GRID_SIZE * TILE_SIZE,
+		GRID_SIZE * TILE_SIZE * SCALE_FACTOR, GRID_SIZE * TILE_SIZE * SCALE_FACTOR,
 		SDL_WINDOW_SHOWN);
 	if (window == NULL) {
 		fprintf(stderr, "Could not create window.\n");
@@ -73,8 +73,13 @@ int main()
 	if (load_sprite(BOULDER,      "16\\boulder.png")      != 0) return 1;
 	if (load_sprite(GOAL,         "16\\goal.png")         != 0) return 1;
 	if (load_sprite(WALL,         "16\\wall.png")         != 0) return 1;
+	if (load_sprite(UP_ARROW, "16\\up_arrow.png") != 0) return 1;
+	if (load_sprite(LEFT_ARROW, "16\\left_arrow.png") != 0) return 1;
+	if (load_sprite(DOWN_ARROW, "16\\down_arrow.png") != 0) return 1;
+	if (load_sprite(RIGHT_ARROW, "16\\right_arrow.png") != 0) return 1;
 
-	SDL_Surface * bg_surf = SDL_CreateRGBSurfaceWithFormat(0, GRID_SIZE * TILE_SIZE, GRID_SIZE * TILE_SIZE, 32, SDL_PIXELFORMAT_RGBA32);
+	SDL_Surface * bg_surf = SDL_CreateRGBSurfaceWithFormat(
+		0, GRID_SIZE * TILE_SIZE * SCALE_FACTOR, GRID_SIZE * TILE_SIZE * SCALE_FACTOR, 32, SDL_PIXELFORMAT_RGBA32);
 	{
 		SDL_Surface * grid_piece = IMG_Load(find_path("16\\ice.png", "resources"));
 		if (grid_piece == NULL) {
@@ -84,8 +89,10 @@ int main()
 		for (int i = 0; i < GRID_SIZE; i++) {
 			for (int j = 0; j < GRID_SIZE; j++) {
 				SDL_Rect pos;
-				pos.x = i * TILE_SIZE; pos.y = j * TILE_SIZE;
-				SDL_BlitSurface(grid_piece, NULL, bg_surf, &pos);
+				pos.x = i * TILE_SIZE * SCALE_FACTOR; pos.y = j * TILE_SIZE * SCALE_FACTOR;
+				pos.w = TILE_SIZE * SCALE_FACTOR;
+				pos.h = TILE_SIZE * SCALE_FACTOR;
+				SDL_BlitScaled(grid_piece, NULL, bg_surf, &pos);
 			}
 		}
 		SDL_FreeSurface(grid_piece);
@@ -107,12 +114,13 @@ int main()
 		return 1;
 	}
 
+	/*
 	for (int y = 0; y < GRID_SIZE; y++) {
 		for (int x = 0; x < GRID_SIZE; x++) {
 			printf("% 2d ", level->arrows[x + y*GRID_SIZE]);
 		}
 		printf("\n");
-	}
+		}*/
 	
 	MovQueue * mov_queue = NULL;
 
@@ -177,7 +185,7 @@ int main()
 			SDL_SetWindowTitle(window, level_names[lev_i]);
 		}
 		level->Update();
-		SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0, 0, 0));
+		//SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0, 0, 0));
 		SDL_BlitSurface(bg_surf, NULL, screen, NULL);
 		level->Draw(screen);
 		SDL_UpdateWindowSurface(window);
