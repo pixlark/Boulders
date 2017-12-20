@@ -46,13 +46,26 @@ int load_sprite(Sprite index, char * name)
 	return 0;
 }
 
-int main()
+/* Average FPS with real-time scaling: 34.975
+ *
+ */
+
+int main(int argc, char ** argv)
 {
 	version_check();
 	SDL_Init(SDL_INIT_VIDEO);
 	TTF_Init();
 	default_font = TTF_OpenFont(find_path("Inconsolata.otf", "resources"), 20);
 
+	float  bench_time   = 10.0;
+	double bench_acc    = 0.0;
+	int    bench_count  = 0;
+	bool benchmarking = false;
+	if (argc > 1 && strcmp(argv[1], "benchmark") == 0) {
+		printf("Benchmarking...\n");
+		bool benchmarking = true;
+	}
+	
 	SDL_Window * window = SDL_CreateWindow(
 		"Boulders",
 		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
@@ -188,8 +201,25 @@ int main()
 		//SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0, 0, 0));
 		SDL_BlitSurface(bg_surf, NULL, screen, NULL);
 		level->Draw(screen);
+		// Draw FPS
+		{
+			char fps_text[16];
+			SDL_Color color={0xFF, 0x00, 0x00};
+			sprintf(fps_text, "%.2f", 1 / delta_time);
+			SDL_Surface * fps_surf = TTF_RenderText_Solid(
+				default_font, fps_text, color);
+			SDL_BlitSurface(fps_surf, NULL, screen, NULL);
+		}
 		SDL_UpdateWindowSurface(window);
 		update_delta_time();
+		bench_time  -= delta_time;
+		bench_acc   += 1 / delta_time;
+		bench_count += 1;
+		printf("%2.2f\r", bench_time);
+		if (bench_time <= 0) {
+			printf("Average FPS: %f\n", bench_acc / bench_count);
+			break;
+		}
 	}
 	return 0;
 }

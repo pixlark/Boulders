@@ -9,7 +9,7 @@
 #define GRID_SIZE 8
 #define TILE_SIZE 16
 
-#define SCALE_FACTOR 6
+#define SCALE_FACTOR 5
 
 #define SPRITE_COUNT 9
 enum Sprite {
