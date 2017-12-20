@@ -7,6 +7,7 @@
 #include "utility.h"
 
 #define GRID_SIZE 8
+#define TILE_SIZE 16
 
 #define SPRITE_COUNT 7
 enum Sprite {

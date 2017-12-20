@@ -55,8 +55,8 @@ bool Level::MovePlayer(Vector2i pos)
 		RollBoulder(bi);
 		/*
 		b->drawable.Animate(
-			Vector2i(b->pos.x * 64, b->pos.y * 64),
-			Vector2i((b->pos.x + b->dir.x) * 64, (b->pos.y + b->dir.y) * 64)
+			Vector2i(b->pos.x * TILE_SIZE, b->pos.y * TILE_SIZE),
+			Vector2i((b->pos.x + b->dir.x) * TILE_SIZE, (b->pos.y + b->dir.y) * TILE_SIZE)
 		);
 		b->pos.x += b->dir.x;
 		b->pos.y += b->dir.y;*/
@@ -75,8 +75,8 @@ bool Level::MovePlayer(Vector2i pos)
 		player.current_sprite = PLAYER_LEFT;
 	}
 	player.drawable.Animate(
-		Vector2i(player.pos.x * 64, player.pos.y * 64),
-		Vector2i(pos.x * 64, pos.y * 64)
+		Vector2i(player.pos.x * TILE_SIZE, player.pos.y * TILE_SIZE),
+		Vector2i(pos.x * TILE_SIZE, pos.y * TILE_SIZE)
 	);
 	player.pos.x = pos.x;
 	player.pos.y = pos.y;
@@ -118,8 +118,8 @@ void Level::RollBoulder(int i)
 		!WallAtPos(next) &&
 		BoulderAtPos(next) == -1) {
 		b->drawable.Animate(
-			Vector2i(b->pos.x * 64, b->pos.y * 64),
-			Vector2i((b->pos.x + b->dir.x) * 64, (b->pos.y + b->dir.y) * 64)
+			Vector2i(b->pos.x * TILE_SIZE, b->pos.y * TILE_SIZE),
+			Vector2i((b->pos.x + b->dir.x) * TILE_SIZE, (b->pos.y + b->dir.y) * TILE_SIZE)
 		);
 		b->pos.x += b->dir.x;
 		b->pos.y += b->dir.y;
@@ -149,14 +149,14 @@ void Level::Draw(SDL_Surface * screen)
 		for (int x = 0; x < GRID_SIZE; x++) {
 			if (walls[x + y*GRID_SIZE] == true) {
 				SDL_Rect wall_rect;
-				wall_rect.x = x * 64; wall_rect.y = y * 64;
+				wall_rect.x = x * TILE_SIZE; wall_rect.y = y * TILE_SIZE;
 				SDL_BlitSurface(sprites[WALL], NULL, screen, &wall_rect);
 			}
 		}
 	}
 	// Draw goal
 	SDL_Rect goal_rect = goal.AsRect();
-	goal_rect.x *= 64; goal_rect.y *= 64;
+	goal_rect.x *= TILE_SIZE; goal_rect.y *= TILE_SIZE;
 	SDL_BlitSurface(sprites[GOAL], NULL, screen, &goal_rect);
 	// Draw boulders
 	if (boulders != NULL) {

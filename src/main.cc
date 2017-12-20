@@ -56,7 +56,7 @@ int main()
 	SDL_Window * window = SDL_CreateWindow(
 		"Boulders",
 		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-		GRID_SIZE * 64, GRID_SIZE * 64,
+		GRID_SIZE * TILE_SIZE, GRID_SIZE * TILE_SIZE,
 		SDL_WINDOW_SHOWN);
 	if (window == NULL) {
 		fprintf(stderr, "Could not create window.\n");
@@ -68,15 +68,15 @@ int main()
 		return 1;
 	}
 
-	if (load_sprite(PLAYER_LEFT,  "player_left.png")  != 0) return 1;
-	if (load_sprite(PLAYER_RIGHT, "player_right.png") != 0) return 1;
-	if (load_sprite(BOULDER,      "boulder.png")      != 0) return 1;
-	if (load_sprite(GOAL,         "goal.png")         != 0) return 1;
-	if (load_sprite(WALL,         "wall.png")         != 0) return 1;
+	if (load_sprite(PLAYER_LEFT,  "16\\player.png")  != 0) return 1;
+	if (load_sprite(PLAYER_RIGHT, "16\\player.png") != 0) return 1;
+	if (load_sprite(BOULDER,      "16\\boulder.png")      != 0) return 1;
+	if (load_sprite(GOAL,         "16\\goal.png")         != 0) return 1;
+	if (load_sprite(WALL,         "16\\wall.png")         != 0) return 1;
 
-	SDL_Surface * bg_surf = SDL_CreateRGBSurfaceWithFormat(0, GRID_SIZE * 64, GRID_SIZE * 64, 32, SDL_PIXELFORMAT_RGBA32);
+	SDL_Surface * bg_surf = SDL_CreateRGBSurfaceWithFormat(0, GRID_SIZE * TILE_SIZE, GRID_SIZE * TILE_SIZE, 32, SDL_PIXELFORMAT_RGBA32);
 	{
-		SDL_Surface * grid_piece = IMG_Load(find_path("bg.png", "resources"));
+		SDL_Surface * grid_piece = IMG_Load(find_path("16\\ice.png", "resources"));
 		if (grid_piece == NULL) {
 			fprintf(stderr, "Could not load background tile image.\n");
 			return 1;
@@ -84,7 +84,7 @@ int main()
 		for (int i = 0; i < GRID_SIZE; i++) {
 			for (int j = 0; j < GRID_SIZE; j++) {
 				SDL_Rect pos;
-				pos.x = i * 64; pos.y = j * 64;
+				pos.x = i * TILE_SIZE; pos.y = j * TILE_SIZE;
 				SDL_BlitSurface(grid_piece, NULL, bg_surf, &pos);
 			}
 		}
