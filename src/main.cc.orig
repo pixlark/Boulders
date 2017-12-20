@@ -68,11 +68,23 @@ int main()
 		return 1;
 	}
 
+<<<<<<< HEAD
+	if (load_sprite(PLAYER_LEFT,  "player_left.png")  != 0) return 1;
+	if (load_sprite(PLAYER_RIGHT, "player_right.png") != 0) return 1;
+	if (load_sprite(BOULDER,      "boulder.png")      != 0) return 1;
+	if (load_sprite(GOAL,         "goal.png")         != 0) return 1;
+	if (load_sprite(WALL,         "wall.png")         != 0) return 1;
+	if (load_sprite(UP_ARROW,     "upwards.png")      != 0) return 1;
+	if (load_sprite(LEFT_ARROW,   "left.png")         != 0) return 1;
+	if (load_sprite(DOWN_ARROW,   "down.png")         != 0) return 1;
+	if (load_sprite(RIGHT_ARROW,  "right.png")        != 0) return 1;
+=======
 	if (load_sprite(PLAYER_LEFT,  "16\\player.png")  != 0) return 1;
 	if (load_sprite(PLAYER_RIGHT, "16\\player.png") != 0) return 1;
 	if (load_sprite(BOULDER,      "16\\boulder.png")      != 0) return 1;
 	if (load_sprite(GOAL,         "16\\goal.png")         != 0) return 1;
 	if (load_sprite(WALL,         "16\\wall.png")         != 0) return 1;
+>>>>>>> master
 
 	SDL_Surface * bg_surf = SDL_CreateRGBSurfaceWithFormat(0, GRID_SIZE * TILE_SIZE, GRID_SIZE * TILE_SIZE, 32, SDL_PIXELFORMAT_RGBA32);
 	{

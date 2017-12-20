@@ -7,7 +7,6 @@ void Level::Alloc()
 	boulders = (Boulder*) malloc(sizeof(Boulder) * boulder_num);
 	for (int i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
 		walls[i] = false;
-		arrows[i] = -1;
 	}
 }
 
@@ -112,26 +111,6 @@ bool Drawable::UpdateAnim(int step)
 void Level::RollBoulder(int i)
 {
 	Boulder * b = boulders + i;
-	if (arrows[b->pos.x + b->pos.y*GRID_SIZE] != -1) {
-		switch (arrows[b->pos.x + b->pos.y*GRID_SIZE]) {
-		case D_UP:
-			b->dir.x = 0;
-			b->dir.y = -1;
-			break;
-		case D_LEFT:
-			b->dir.x = -1;
-			b->dir.y = 0;
-			break;
-		case D_DOWN:
-			b->dir.x = 0;
-			b->dir.y = 1;
-			break;
-		case D_RIGHT:
-			b->dir.x = 1;
-			b->dir.y = 0;
-			break;
-		}
-	}
 	Vector2i next;
 	next.x = b->pos.x + b->dir.x;
 	next.y = b->pos.y + b->dir.y;
@@ -165,29 +144,13 @@ void Level::Update()
 
 void Level::Draw(SDL_Surface * screen)
 {
-	// Draw walls and arrows
+	// Draw walls
 	for (int y = 0; y < GRID_SIZE; y++) {
 		for (int x = 0; x < GRID_SIZE; x++) {
-			SDL_Rect blit_rect;
-			blit_rect.x = x * 64; blit_rect.y = y * 64;
-			if (arrows[x + y*GRID_SIZE] != -1) {
-				switch (arrows[x + y*GRID_SIZE]) {
-				case D_UP:
-					SDL_BlitSurface(sprites[UP_ARROW], NULL, screen, &blit_rect);
-					break;
-				case D_LEFT:
-					SDL_BlitSurface(sprites[LEFT_ARROW], NULL, screen, &blit_rect);
-					break;
-				case D_DOWN:
-					SDL_BlitSurface(sprites[DOWN_ARROW], NULL, screen, &blit_rect);
-					break;
-				case D_RIGHT:
-					SDL_BlitSurface(sprites[RIGHT_ARROW], NULL, screen, &blit_rect);
-					break;
-				}
-			}
 			if (walls[x + y*GRID_SIZE] == true) {
-				SDL_BlitSurface(sprites[WALL], NULL, screen, &blit_rect);
+				SDL_Rect wall_rect;
+				wall_rect.x = x * TILE_SIZE; wall_rect.y = y * TILE_SIZE;
+				SDL_BlitSurface(sprites[WALL], NULL, screen, &wall_rect);
 			}
 		}
 	}
@@ -203,17 +166,20 @@ void Level::Draw(SDL_Surface * screen)
 		}
 	}
 	// Draw player
+	//SDL_Rect player_rect = player_exact.AsRect();
 	SDL_Rect player_rect = player.drawable.epos.AsRect();
 	SDL_BlitSurface(sprites[player.current_sprite], NULL, screen, &player_rect);
+	// Draw lose screen
+	switch (loss) {
+	case NONE:
+		break;
+	}
 }
 
 Level * Level::Copy()
 {
 	Level * ret = (Level*) malloc(sizeof(Level));
-	for (int i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
-		ret->walls[i] = walls[i];
-		ret->arrows[i] = arrows[i];
-	}
+	for (int i = 0; i < GRID_SIZE * GRID_SIZE; i++) ret->walls[i] = walls[i];
 	ret->player = player;
 	ret->goal = goal;
 	ret->boulders = (Boulder*) malloc(sizeof(Boulder) * boulder_num);

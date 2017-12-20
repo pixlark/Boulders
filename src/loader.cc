@@ -67,7 +67,7 @@ Level * load_level_from_file(char * path)
 				break;
 			case 'O':
 				level->boulders[boulder_i].pos = Vector2i(x, y);
-				level->boulders[boulder_i].drawable.epos = Vector2i(x * 64, y * 64);
+				level->boulders[boulder_i].drawable.epos = Vector2i(x * TILE_SIZE, y * TILE_SIZE);
 				level->boulders[boulder_i].drawable.animating = false;
 				boulder_i++;
 				break;
@@ -76,7 +76,7 @@ Level * load_level_from_file(char * path)
 				break;
 			case 'P':
 				level->player.pos = Vector2i(x, y);
-				level->player.drawable.epos = Vector2i(x * 64, y * 64);
+				level->player.drawable.epos = Vector2i(x * TILE_SIZE, y * TILE_SIZE);
 				level->player.drawable.animating = false;
 				level->player.current_sprite = PLAYER_LEFT;
 				break;

@@ -187,7 +187,13 @@ void Level::Draw(SDL_Surface * screen)
 				}
 			}
 			if (walls[x + y*GRID_SIZE] == true) {
+<<<<<<< HEAD
 				SDL_BlitSurface(sprites[WALL], NULL, screen, &blit_rect);
+=======
+				SDL_Rect wall_rect;
+				wall_rect.x = x * TILE_SIZE; wall_rect.y = y * TILE_SIZE;
+				SDL_BlitSurface(sprites[WALL], NULL, screen, &wall_rect);
+>>>>>>> master
 			}
 		}
 	}
