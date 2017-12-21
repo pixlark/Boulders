@@ -240,6 +240,9 @@ int editor_loop(SDL_Surface * screen, SDL_Window * window)
 				case SDL_SCANCODE_A:
 					mode = MODE_ARROW;
 					break;
+				case SDL_SCANCODE_S:
+					save_level_to_file(level, find_path("test.lev", "levels"));
+					break;
 				}
 				break;
 			case SDL_MOUSEBUTTONDOWN:

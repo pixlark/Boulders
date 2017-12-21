@@ -7,6 +7,7 @@
 #include "utility.h"
 
 char ** load_level_names(char * path, int * count);
+Level * save_level_to_file(Level * level, char * path);
 Level * load_level_from_file(char * path);
 
 #endif
