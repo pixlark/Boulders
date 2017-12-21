@@ -5,11 +5,12 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <nfd.h>
 
 #define SDL_MAIN_HANDLED
-#if defined(_WIN32) || defined (_WIN64)
+#if defined(_WIN32) || defined(_WIN64)
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>

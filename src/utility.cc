@@ -29,6 +29,7 @@ void os_path(char * path, int len)
 	}
 }
 
+// TODO(pixlark): Ensure that this function is safe even with strange paths
 char * find_path(char * name, char * directory)
 {
 	char * buffer = (char*) malloc(512);
@@ -36,15 +37,19 @@ char * find_path(char * name, char * directory)
 	int rlen = GetModuleFileName(NULL, buffer, 512);
 	if (rlen == 0) return NULL;
 	char * ls = strrchr(buffer, '\\');
-	*(ls + 1) = '\0'; // truncate exe name
-	strcat(buffer, "..\\");
+	*ls = '\0'; // truncate exe name
+	//strcat(buffer, "..\\");
+	ls = strrchr(buffer, '\\');
+	*(ls + 1) = '\0';
 #else
 	int rlen = readlink("/proc/self/exe", buffer, 511);
 	if (rlen == -1) return NULL;
 	buffer[rlen] = '\0';
 	char * ls = strrchr(buffer, '/');
-	*(ls + 1) = '\0'; // truncate exe name
-	strcat(buffer, "../");
+	ls = '\0'; // truncate exe name
+	//strcat(buffer, "../");
+	ls = strrchr(buffer, '/');
+	*(ls + 1) = '\0';
 #endif
 	strcat(buffer, directory);
 	strcat(buffer, "/");

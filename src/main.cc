@@ -258,6 +258,8 @@ int editor_loop(SDL_Surface * screen, SDL_Window * window)
 							find_path("", "levels"), &path);
 						if (result == NFD_OKAY) {
 							save_level_to_file(level, path);
+						} else if (result == NFD_ERROR) {
+							printf("NFD_ERROR: %s\n", NFD_GetError());
 						}
 						free(path);
 					}

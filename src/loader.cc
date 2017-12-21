@@ -21,7 +21,7 @@ char ** load_level_names(char * path, int * count)
 	return names;
 }
 
-Level * save_level_to_file(Level * level, char * path)
+void save_level_to_file(Level * level, char * path)
 {
 	FILE * level_file = fopen(path, "w");
 	// Write in background

@@ -6,7 +6,8 @@ include_dirs = [
 	"G:\\.libraries\\SDL2_ttf-2.0.14\\include",
 	"G:\\.libraries\\SDL2-2.0.7\\include",
 	"G:\\.libraries\\SDL2_mixer-2.0.2\\include",
-	"G:\\.libraries\\SDL2_image-2.0.2\\include"
+	"G:\\.libraries\\SDL2_image-2.0.2\\include",
+	"G:\\.libraries\\nativefiledialog\\src\\include"
 ]
 
 # DEPENDENCIES FOR 64-BIT
@@ -15,11 +16,16 @@ dependencies64 = [
 	"G:\\.libraries\\SDL2-2.0.7\\lib\\x64\\SDL2main.lib",
 	"G:\\.libraries\\SDL2_ttf-2.0.14\\lib\\x64\\SDL2_ttf.lib",
 	"G:\\.libraries\\SDL2_mixer-2.0.2\\lib\\x64\\SDL2_mixer.lib",
-	"G:\\.libraries\\SDL2_image-2.0.2\\lib\\x64\\SDL2_image.lib"
+	"G:\\.libraries\\SDL2_image-2.0.2\\lib\\x64\\SDL2_image.lib",
+	"shell32.lib",
+	"ole32.lib",
+	"comctl32.lib"
 ]
 release_dependencies64 = [
+	"G:\\.libraries\\nativefiledialog\\build\\lib\\Release\\x64\\nfd.lib"
 ]
 debug_dependencies64 = [
+	"G:\\.libraries\\nativefiledialog\\build\\lib\\Debug\\x64\\nfd_d.lib"
 ]
 
 # DEPENDENCIES FOR 32-BIT
@@ -71,9 +77,9 @@ COMPILING RELEASE VERSION FOR 64-BIT
 	run_cmds = []
 	run_cmds.append(x64_dir + "vcvars64.bat")
 	run_cmds.append("cd bin64")
-	run_cmds.append("cl /EHsc {0} {1} /MT /c /Fo.\\obj\\"\
+	run_cmds.append("cl /EHsc {0} {1} /MD /c /Fo.\\obj\\"\
 		.format(source_files, include_opts))
-	run_cmds.append("link /LTCG {0} {1} {2} /out:{3}"\
+	run_cmds.append("link /NODEFAULTLIB:LIBCMT /LTCG {0} {1} {2} /out:{3}"\
 		.format(obj_files, ' '.join(dependencies64), ' '.join(release_dependencies64), exe_name))
 	run_cmds.append("cd ..")
 	run_cmds.append("robocopy dll64 bin64 /COPYALL /E > nul")
