@@ -34,7 +34,7 @@ void save_level_to_file(Level * level, char * path)
 	fseek(level_file, 0, SEEK_SET);
 	// Write in boulders
 	for (int i = 0; i < level->boulders.len; i++) {
-		fseek(level_file, level->boulders[i].pos.x + level->boulders[i].pos.y * (GRID_SIZE + 1), SEEK_SET);
+		fseek(level_file, level->boulders[i].pos.x + level->boulders[i].pos.y * (GRID_SIZE + NEWLINE_LEN), SEEK_SET);
 		fputc('O', level_file);
 	}
 	// Write in walls
@@ -56,10 +56,10 @@ void save_level_to_file(Level * level, char * path)
 		fseek(level_file, 1, SEEK_CUR);
 	}
 	// Write in player
-	fseek(level_file, level->player.pos.x + level->player.pos.y * (GRID_SIZE + 1), SEEK_SET);
+	fseek(level_file, level->player.pos.x + level->player.pos.y * (GRID_SIZE + NEWLINE_LEN), SEEK_SET);
 	fputc('P', level_file);
 	// Write in goal
-	fseek(level_file, level->goal.x + level->goal.y * (GRID_SIZE + 1), SEEK_SET);
+	fseek(level_file, level->goal.x + level->goal.y * (GRID_SIZE + NEWLINE_LEN), SEEK_SET);
 	fputc('X', level_file);
 	fclose(level_file);
 }
