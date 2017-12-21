@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <nfd.h>
+
 #define SDL_MAIN_HANDLED
 #if defined(_WIN32) || defined (_WIN64)
 #include <SDL.h>

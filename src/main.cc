@@ -240,8 +240,27 @@ int editor_loop(SDL_Surface * screen, SDL_Window * window)
 				case SDL_SCANCODE_A:
 					mode = MODE_ARROW;
 					break;
+				case SDL_SCANCODE_O:
+					{
+						nfdchar_t * path = NULL;
+						nfdresult_t result = NFD_OpenDialog("lev",
+							find_path("", "levels"), &path);
+						if (result == NFD_OKAY) {
+							level = load_level_from_file(path);
+						}
+						free(path);
+					}
+					break;
 				case SDL_SCANCODE_S:
-					save_level_to_file(level, find_path("test.lev", "levels"));
+					{
+						nfdchar_t * path = NULL;
+						nfdresult_t result = NFD_SaveDialog("lev",
+							find_path("", "levels"), &path);
+						if (result == NFD_OKAY) {
+							save_level_to_file(level, path);
+						}
+						free(path);
+					}
 					break;
 				}
 				break;
