@@ -77,7 +77,7 @@ COMPILING RELEASE VERSION FOR 64-BIT
 	run_cmds = []
 	run_cmds.append(x64_dir + "vcvars64.bat")
 	run_cmds.append("cd bin64")
-	run_cmds.append("cl /EHsc {0} {1} /MD /c /Fo.\\obj\\"\
+	run_cmds.append("cl /EHsc {0} {1} /MT /c /Fo.\\obj\\"\
 		.format(source_files, include_opts))
 	run_cmds.append("link /NODEFAULTLIB:LIBCMT /LTCG {0} {1} {2} /out:{3}"\
 		.format(obj_files, ' '.join(dependencies64), ' '.join(release_dependencies64), exe_name))
