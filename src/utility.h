@@ -34,7 +34,10 @@ struct List {
 	T * arr;
 	int len;
 	int len_max;
+	
 	void Alloc();
+	void Free();
+	List<T> Copy();
 	void Push(T p);
 	T Pop();
 	T& operator[](int indice);
@@ -50,6 +53,25 @@ void List<T>::Alloc()
 	len = 0;
 	len_max = 4;
 	arr = (T*) malloc(sizeof(T) * len_max);
+}
+
+template <typename T>
+void List<T>::Free()
+{
+	free(arr);
+}
+
+template <typename T>
+List<T> List<T>::Copy()
+{
+	List<T> ret;
+	ret.arr = (T*) malloc(sizeof(T) * len_max);
+	ret.len = len;
+	ret.len_max = len_max;
+	for (int i = 0; i < len; i++) {
+		ret.arr[i] = arr[i];
+	}
+	return ret;
 }
 
 template <typename T>

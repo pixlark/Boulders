@@ -4,16 +4,17 @@ SDL_Surface * sprites[SPRITE_COUNT];
 
 void Level::Alloc()
 {
-	boulders = (Boulder*) malloc(sizeof(Boulder) * boulder_num);
+	boulders.Alloc();
 	for (int i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
 		walls[i] = false;
 		arrows[i] = -1;
 	}
+	loss = NONE;
 }
 
 void Level::Free()
 {
-	free(boulders);
+	boulders.Free();
 }
 
 bool Level::InBounds(Vector2i pos)
@@ -24,7 +25,7 @@ bool Level::InBounds(Vector2i pos)
 
 int Level::BoulderAtPos(Vector2i pos)
 {
-	for (int i = 0; i < boulder_num; i++) {
+	for (int i = 0; i < boulders.len; i++) {
 		if (!boulders[i].drawable.animating && boulders[i].pos.x == pos.x && boulders[i].pos.y == pos.y) {
 			return i;
 		}
@@ -51,7 +52,7 @@ bool Level::MovePlayer(Vector2i pos)
 	// Boulders
 	int bi = BoulderAtPos(pos);
 	if (bi != -1) {
-		Boulder * b = boulders + bi;
+		Boulder * b = &(boulders[bi]);
 		b->dir = dir;
 		RollBoulder(bi);
 		/*
@@ -111,7 +112,7 @@ bool Drawable::UpdateAnim(int step)
 
 void Level::RollBoulder(int i)
 {
-	Boulder * b = boulders + i;
+	Boulder * b = &(boulders[i]);
 	if (arrows[b->pos.x + b->pos.y*GRID_SIZE] != -1) {
 		switch (arrows[b->pos.x + b->pos.y*GRID_SIZE]) {
 		case D_UP:
@@ -149,8 +150,8 @@ void Level::RollBoulder(int i)
 
 void Level::Update()
 {
-	for (int i = 0; i < boulder_num; i++) {
-		Boulder * b = boulders + i;
+	for (int i = 0; i < boulders.len; i++) {
+		Boulder * b = &(boulders[i]);
 		if (b->drawable.UpdateAnim(5)) {
 			RollBoulder(i);
 		}
@@ -200,10 +201,8 @@ void Level::Draw(SDL_Surface * screen)
 	// Draw goal
 	draw_tile(screen, sprites[GOAL], goal.x * TILE_SIZE, goal.y * TILE_SIZE);
 	// Draw boulders
-	if (boulders != NULL) {
-		for (int i = 0; i < boulder_num; i++) {
-			draw_tile(screen, sprites[BOULDER], boulders[i].drawable.epos.x, boulders[i].drawable.epos.y);
-		}
+	for (int i = 0; i < boulders.len; i++) {
+		draw_tile(screen, sprites[BOULDER], boulders[i].drawable.epos.x, boulders[i].drawable.epos.y);
 	}
 	// Draw player
 	draw_tile(screen, sprites[player.current_sprite], player.drawable.epos.x, player.drawable.epos.y);
@@ -218,9 +217,7 @@ Level * Level::Copy()
 	}
 	ret->player = player;
 	ret->goal = goal;
-	ret->boulders = (Boulder*) malloc(sizeof(Boulder) * boulder_num);
-	for (int i = 0; i < boulder_num; i++) ret->boulders[i] = boulders[i];
-	ret->boulder_num = boulder_num;
+	ret->boulders = boulders.Copy();
 	ret->loss = loss;
 	return ret;
 }

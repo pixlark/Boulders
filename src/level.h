@@ -65,8 +65,9 @@ struct Level {
 	bool walls[GRID_SIZE * GRID_SIZE];
 	Player player;
 	Vector2i goal;
-	Boulder * boulders;
-	int boulder_num;
+	List<Boulder> boulders;
+	//Boulder * boulders;
+	//int boulder_num;
 	LossCondition loss = NONE;
 	int arrows[GRID_SIZE * GRID_SIZE];
 	void Alloc();

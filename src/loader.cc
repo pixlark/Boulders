@@ -22,8 +22,6 @@ char ** load_level_names(char * path, int * count)
 Level * load_level_from_file(char * path)
 {
 	Level * level = (Level*) malloc(sizeof(Level));
-	level->loss = NONE;
-	level->boulder_num = 0;
 	FILE * level_file = fopen(path, "r");
 	if (level_file == NULL) {
 		free(level);
@@ -42,10 +40,8 @@ Level * load_level_from_file(char * path)
 		case '<':
 		case '^':
 		case 'v':
-		case '\n':
-			break;
 		case 'O':
-			level->boulder_num++;
+		case '\n':
 			break;
 		default:
 			free(level);
@@ -58,7 +54,6 @@ Level * load_level_from_file(char * path)
 	
 	// Do stuff
 	fseek(level_file, 0, SEEK_SET);
-	int boulder_i = 0;
 	for (int y = 0; y < GRID_SIZE; y++) {
 		for (int x = 0; x < GRID_SIZE; x++) {
 			c = fgetc(level_file);
@@ -66,10 +61,13 @@ Level * load_level_from_file(char * path)
 			case '.':
 				break;
 			case 'O':
-				level->boulders[boulder_i].pos = Vector2i(x, y);
-				level->boulders[boulder_i].drawable.epos = Vector2i(x * TILE_SIZE, y * TILE_SIZE);
-				level->boulders[boulder_i].drawable.animating = false;
-				boulder_i++;
+				{
+					Boulder new_boulder;
+					new_boulder.pos = Vector2i(x, y);
+					new_boulder.drawable.epos = Vector2i(x * TILE_SIZE, y * TILE_SIZE);
+					new_boulder.drawable.animating = false;
+					level->boulders.Push(new_boulder);
+				}
 				break;
 			case 'X':
 				level->goal = Vector2i(x, y);
