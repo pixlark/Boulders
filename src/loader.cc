@@ -44,7 +44,7 @@ void save_level_to_file(Level * level, char * path)
 			if (level->walls[x + y*GRID_SIZE]) fputc('-', level_file);
 			else fseek(level_file, 1, SEEK_CUR);
 		}
-		fseek(level_file, 1, SEEK_CUR);
+		fseek(level_file, NEWLINE_LEN, SEEK_CUR);
 	}
 	// Write in arrows
 	fseek(level_file, 0, SEEK_SET);
@@ -53,7 +53,7 @@ void save_level_to_file(Level * level, char * path)
 			if (level->arrows[x + y*GRID_SIZE] != -1) fprintf(level_file, "%c", arrow_chars[level->arrows[x + y*GRID_SIZE]]);
 			else fseek(level_file, 1, SEEK_CUR);
 		}
-		fseek(level_file, 1, SEEK_CUR);
+		fseek(level_file, NEWLINE_LEN, SEEK_CUR);
 	}
 	// Write in player
 	fseek(level_file, level->player.pos.x + level->player.pos.y * (GRID_SIZE + NEWLINE_LEN), SEEK_SET);
