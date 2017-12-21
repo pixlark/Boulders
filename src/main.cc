@@ -266,6 +266,12 @@ int editor_loop(SDL_Surface * screen, SDL_Window * window)
 					level->player.pos = Vector2i(x, y);
 					level->player.drawable.epos = Vector2i(x * TILE_SIZE, y * TILE_SIZE);
 					break;
+				case MODE_GOAL:
+					level->goal = Vector2i(x, y);
+					break;
+				case MODE_ARROW:
+					level->arrows[x + y*GRID_SIZE] = ((level->arrows[x + y*GRID_SIZE] + 2) % 5) - 1;
+					break;
 				}
 				break;
 			}
