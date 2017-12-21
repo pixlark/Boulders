@@ -53,6 +53,7 @@ struct Boulder {
 	Vector2i pos;
 	Vector2i dir;
 	Drawable drawable;
+	void Create(Vector2i pos);
 };
 
 struct Player {

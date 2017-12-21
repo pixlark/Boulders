@@ -250,6 +250,18 @@ int editor_loop(SDL_Surface * screen, SDL_Window * window)
 				case MODE_WALL:
 					level->walls[x + y*GRID_SIZE] = !level->walls[x + y*GRID_SIZE];
 					break;
+				case MODE_BOULDER:
+					{
+						int b = level->BoulderAtPos(Vector2i(x, y));
+						if (b == -1) {
+							Boulder new_boulder;
+							new_boulder.Create(Vector2i(x, y));
+							level->boulders.Push(new_boulder);
+						} else {
+							level->boulders.Remove(b);
+						}
+					}
+					break;
 				case MODE_PLAYER:
 					level->player.pos = Vector2i(x, y);
 					level->player.drawable.epos = Vector2i(x * TILE_SIZE, y * TILE_SIZE);

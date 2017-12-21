@@ -63,9 +63,7 @@ Level * load_level_from_file(char * path)
 			case 'O':
 				{
 					Boulder new_boulder;
-					new_boulder.pos = Vector2i(x, y);
-					new_boulder.drawable.epos = Vector2i(x * TILE_SIZE, y * TILE_SIZE);
-					new_boulder.drawable.animating = false;
+					new_boulder.Create(Vector2i(x, y));
 					level->boulders.Push(new_boulder);
 				}
 				break;

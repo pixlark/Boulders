@@ -2,6 +2,13 @@
 
 SDL_Surface * sprites[SPRITE_COUNT];
 
+void Boulder::Create(Vector2i pos)
+{
+	this->pos = pos;
+	drawable.epos = Vector2i(pos.x * TILE_SIZE, pos.y * TILE_SIZE);
+	drawable.animating = false;
+}
+
 void Level::Alloc()
 {
 	boulders.Alloc();
