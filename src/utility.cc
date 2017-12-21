@@ -46,7 +46,7 @@ char * find_path(char * name, char * directory)
 	if (rlen == -1) return NULL;
 	buffer[rlen] = '\0';
 	char * ls = strrchr(buffer, '/');
-	ls = '\0'; // truncate exe name
+	*ls = '\0'; // truncate exe name
 	//strcat(buffer, "../");
 	ls = strrchr(buffer, '/');
 	*(ls + 1) = '\0';
