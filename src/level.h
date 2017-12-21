@@ -11,8 +11,9 @@
 
 #define SCALE_FACTOR 5
 
-#define SPRITE_COUNT 9
+#define SPRITE_COUNT 10
 enum Sprite {
+	BACKGROUND,
 	WALL,
 	PLAYER_LEFT,
 	PLAYER_RIGHT,
