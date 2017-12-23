@@ -11,7 +11,7 @@
 
 #define SCALE_FACTOR 5
 
-#define SPRITE_COUNT 10
+#define SPRITE_COUNT 14
 enum Sprite {
 	BACKGROUND,
 	WALL,
@@ -22,7 +22,11 @@ enum Sprite {
 	UP_ARROW,
 	LEFT_ARROW,
 	DOWN_ARROW,
-	RIGHT_ARROW
+	RIGHT_ARROW,
+	UP_STOPPER,
+	LEFT_STOPPER,
+	DOWN_STOPPER,
+	RIGHT_STOPPER,
 };
 
 enum Directions {

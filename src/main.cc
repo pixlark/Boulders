@@ -365,9 +365,13 @@ int main(int argc, char ** argv)
 	if (load_sprite(GOAL,         "16\\goal.png")        != 0) return 1;
 	if (load_sprite(WALL,         "16\\wall.png")        != 0) return 1;
 	if (load_sprite(UP_ARROW,     "16\\up_arrow.png")    != 0) return 1;
-	if (load_sprite(LEFT_ARROW,   "16\\left_arrow.png")  != 0) return 1;
-	if (load_sprite(DOWN_ARROW,   "16\\down_arrow.png")  != 0) return 1;
-	if (load_sprite(RIGHT_ARROW,  "16\\right_arrow.png") != 0) return 1;
+	if (load_sprite(LEFT_ARROW,   "16\\left_arrow.png")      != 0) return 1;
+	if (load_sprite(DOWN_ARROW,   "16\\down_arrow.png")      != 0) return 1;
+	if (load_sprite(RIGHT_ARROW,  "16\\right_arrow.png")     != 0) return 1;
+	if (load_sprite(UP_STOPPER,     "16\\up_stopper.png")    != 0) return 1;
+	if (load_sprite(LEFT_STOPPER,   "16\\left_stopper.png")  != 0) return 1;
+	if (load_sprite(DOWN_STOPPER,   "16\\down_stopper.png")  != 0) return 1;
+	if (load_sprite(RIGHT_STOPPER,  "16\\right_stopper.png") != 0) return 1;
 
 	scale_sprites(screen);
 	
