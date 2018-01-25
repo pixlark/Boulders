@@ -22,4 +22,6 @@
 #include <SDL2/SDL_image.h>
 #endif
 
+extern TTF_Font * default_font;
+
 #endif

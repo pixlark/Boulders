@@ -1,5 +1,5 @@
 # Independent
-src=src/main.cc src/loader.cc src/level.cc src/utility.cc
+src=src/main.cc src/loader.cc src/level.cc src/utility.cc src/editor.cc src/game.cc
 other_opts=-std=c++11 -Wno-write-strings -o bin/boulders.exe
 dyn_libs=-lSDL2 -lSDL2main -lSDL2_ttf -lSDL2_mixer -lSDL2_image -lnfd
 
