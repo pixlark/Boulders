@@ -6,6 +6,9 @@
 #include "loader.h"
 #include "utility.h"
 
+#define SPRITE_PRE "16\\"
+#define SPRITE(val, name) if (load_sprite(val, SPRITE_PRE name) != 0) return 1;
+
 TTF_Font * default_font;
 
 enum GameMode {
@@ -56,6 +59,7 @@ int main(int argc, char ** argv)
 	version_check();
 	SDL_Init(SDL_INIT_VIDEO);
 	TTF_Init();
+	IMG_Init(IMG_INIT_PNG);
 	default_font = TTF_OpenFont(find_path("Inconsolata.otf", "resources"), 20);
 	
 	GameMode game_mode = GAME;
@@ -84,19 +88,20 @@ int main(int argc, char ** argv)
 		return 1;
 	}
 
-	if (load_sprite(PLAYER_LEFT,    "16\\player.png")        != 0) return 1;
-	if (load_sprite(PLAYER_RIGHT,   "16\\player.png")        != 0) return 1;
-	if (load_sprite(BOULDER,        "16\\boulder.png")       != 0) return 1;
-	if (load_sprite(GOAL,           "16\\goal.png")          != 0) return 1;
-	if (load_sprite(WALL,           "16\\wall.png")          != 0) return 1;
-	if (load_sprite(UP_ARROW,       "16\\up_arrow.png")      != 0) return 1;
-	if (load_sprite(LEFT_ARROW,     "16\\left_arrow.png")    != 0) return 1;
-	if (load_sprite(DOWN_ARROW,     "16\\down_arrow.png")    != 0) return 1;
-	if (load_sprite(RIGHT_ARROW,    "16\\right_arrow.png")   != 0) return 1;
-	if (load_sprite(UP_STOPPER,     "16\\up_stopper.png")    != 0) return 1;
-	if (load_sprite(LEFT_STOPPER,   "16\\left_stopper.png")  != 0) return 1;
-	if (load_sprite(DOWN_STOPPER,   "16\\down_stopper.png")  != 0) return 1;
-	if (load_sprite(RIGHT_STOPPER,  "16\\right_stopper.png") != 0) return 1;
+	// Sprite loading
+	SPRITE(PLAYER_LEFT,    "player.png");
+	SPRITE(PLAYER_RIGHT,   "player.png");
+	SPRITE(BOULDER,        "boulder.png");
+	SPRITE(GOAL,           "goal.png");
+	SPRITE(WALL,           "wall.png");
+	SPRITE(UP_ARROW,       "up_arrow.png");
+	SPRITE(LEFT_ARROW,     "left_arrow.png");
+	SPRITE(DOWN_ARROW,     "down_arrow.png");
+	SPRITE(RIGHT_ARROW,    "right_arrow.png");
+	SPRITE(UP_STOPPER,     "up_stopper.png");
+	SPRITE(LEFT_STOPPER,   "left_stopper.png");
+	SPRITE(DOWN_STOPPER,   "down_stopper.png");
+	SPRITE(RIGHT_STOPPER,  "right_stopper.png");
 
 	scale_sprites(screen);
 	

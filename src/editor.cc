@@ -22,7 +22,7 @@ char * editor_mode_names[] = {
 int editor_loop(SDL_Surface * screen, SDL_Window * window)
 {
 	Level * level = load_level_from_file(find_path("default.lev", "levels"));
-	SDL_SetWindowTitle(window, "Level Editor");
+	SDL_SetWindowTitle(window, "...");
 	if (level == NULL) {
 		printf("Invalid default level file.\n");
 		return 1;
@@ -67,6 +67,7 @@ int editor_loop(SDL_Surface * screen, SDL_Window * window)
 						if (result == NFD_OKAY) {
 							level = load_level_from_file(path);
 						}
+						SDL_SetWindowTitle(window, path);
 						free(path);
 					}
 					break;
@@ -77,6 +78,7 @@ int editor_loop(SDL_Surface * screen, SDL_Window * window)
 							find_path("", "levels"), &path);
 						if (result == NFD_OKAY) {
 							save_level_to_file(level, path);
+							SDL_SetWindowTitle(window, path);
 						} else if (result == NFD_ERROR) {
 							printf("NFD_ERROR: %s\n", NFD_GetError());
 						}
