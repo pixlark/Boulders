@@ -74,13 +74,15 @@ struct Level {
 	//Boulder * boulders;
 	//int boulder_num;
 	LossCondition loss = NONE;
-	int arrows[GRID_SIZE * GRID_SIZE];
+	int arrows  [GRID_SIZE * GRID_SIZE];
+	int stoppers[GRID_SIZE * GRID_SIZE];
 	void Alloc();
 	void Free();
 	bool InBounds(Vector2i pos);
 	int BoulderAtPos(Vector2i pos);
 	int TriangleAtPos(Vector2i pos);
 	bool WallAtPos(Vector2i pos);
+	bool Stoppering(Vector2i pos, Vector2i dir);
 	void RollBoulder(int i);
 	void Update();
 	bool MovePlayer(Vector2i epos);

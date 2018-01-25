@@ -13,8 +13,9 @@ void Level::Alloc()
 {
 	boulders.Alloc();
 	for (int i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
-		walls[i] = false;
-		arrows[i] = -1;
+		walls[i]    = false;
+		arrows[i]   = -1;
+		stoppers[i] = -1;
 	}
 	loss = NONE;
 }
@@ -117,6 +118,20 @@ bool Drawable::UpdateAnim(int step)
 	return false;
 }
 
+bool Level::Stoppering(Vector2i pos, Vector2i dir) {
+	int s = stoppers[pos.x + pos.y*GRID_SIZE];
+	if (s != -1) {
+		if (
+			(s == D_UP    && dir.y > 0) ||
+			(s == D_LEFT  && dir.x > 0) ||
+			(s == D_DOWN  && dir.y < 0) ||
+			(s == D_RIGHT && dir.x < 0)) {
+			return true;
+		}
+	}
+	return false;
+}
+
 void Level::RollBoulder(int i)
 {
 	Boulder * b = &(boulders[i]);
@@ -145,7 +160,8 @@ void Level::RollBoulder(int i)
 	next.y = b->pos.y + b->dir.y;
 	if (InBounds(next) &&
 		!WallAtPos(next) &&
-		BoulderAtPos(next) == -1) {
+		BoulderAtPos(next) == -1 &&
+		!Stoppering(next, b->dir)) {
 		b->drawable.Animate(
 			Vector2i(b->pos.x * TILE_SIZE, b->pos.y * TILE_SIZE),
 			Vector2i((b->pos.x + b->dir.x) * TILE_SIZE, (b->pos.y + b->dir.y) * TILE_SIZE)
@@ -185,20 +201,40 @@ void Level::Draw(SDL_Surface * screen)
 	for (int y = 0; y < GRID_SIZE; y++) {
 		for (int x = 0; x < GRID_SIZE; x++) {
 			if (arrows[x + y*GRID_SIZE] != -1) {
+				int spr = -1;
 				switch (arrows[x + y*GRID_SIZE]) {
 				case D_UP:
-					draw_tile(screen, sprites[UP_ARROW], x * TILE_SIZE, y * TILE_SIZE);
+					spr = UP_ARROW;
 					break;
 				case D_LEFT:
-					draw_tile(screen, sprites[LEFT_ARROW], x * TILE_SIZE, y * TILE_SIZE);
+					spr = LEFT_ARROW;
 					break;
 				case D_DOWN:
-					draw_tile(screen, sprites[DOWN_ARROW], x * TILE_SIZE, y * TILE_SIZE);
+					spr = DOWN_ARROW;
 					break;
 				case D_RIGHT:
-					draw_tile(screen, sprites[RIGHT_ARROW], x * TILE_SIZE, y * TILE_SIZE);
+					spr = RIGHT_ARROW;
 					break;
 				}
+				draw_tile(screen, sprites[spr], x * TILE_SIZE, y * TILE_SIZE);
+			}
+			if (stoppers[x + y*GRID_SIZE] != -1) {
+				int spr = -1;
+				switch (stoppers[x + y*GRID_SIZE]) {
+				case D_UP:
+					spr = UP_STOPPER;
+					break;
+				case D_LEFT:
+					spr = LEFT_STOPPER;
+					break;
+				case D_DOWN:
+					spr = DOWN_STOPPER;
+					break;
+				case D_RIGHT:
+					spr = RIGHT_STOPPER;
+					break;
+				}
+				draw_tile(screen, sprites[spr], x * TILE_SIZE, y * TILE_SIZE);
 			}
 			if (walls[x + y*GRID_SIZE] == true) {
 				draw_tile(screen, sprites[WALL], x * TILE_SIZE, y * TILE_SIZE);
@@ -221,6 +257,7 @@ Level * Level::Copy()
 	for (int i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
 		ret->walls[i] = walls[i];
 		ret->arrows[i] = arrows[i];
+		ret->stoppers[i] = stoppers[i];
 	}
 	ret->player = player;
 	ret->goal = goal;

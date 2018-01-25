@@ -1,6 +1,7 @@
 #include "loader.h"
 
 char arrow_chars[4] = {'^', '<', 'v', '>'};
+char stopper_chars[4] = {'a', 's', 'd', 'f'};
 
 static inline void advance_line(FILE * file)
 {
@@ -50,8 +51,21 @@ void save_level_to_file(Level * level, char * path)
 	fseek(level_file, 0, SEEK_SET);
 	for (int y = 0; y < GRID_SIZE; y++) {
 		for (int x = 0; x < GRID_SIZE; x++) {
-			if (level->arrows[x + y*GRID_SIZE] != -1) fprintf(level_file, "%c", arrow_chars[level->arrows[x + y*GRID_SIZE]]);
-			else fseek(level_file, 1, SEEK_CUR);
+			if (level->arrows[x + y*GRID_SIZE] != -1)
+				fprintf(level_file, "%c", arrow_chars[level->arrows[x + y*GRID_SIZE]]);
+			else
+				fseek(level_file, 1, SEEK_CUR);
+		}
+		fseek(level_file, 1, SEEK_CUR);
+	}
+	// Write in stoppers
+	fseek(level_file, 0, SEEK_SET);
+	for (int y = 0; y < GRID_SIZE; y++) {
+		for (int x = 0; x < GRID_SIZE; x++) {
+			if (level->stoppers[x + y*GRID_SIZE] != -1)
+				fprintf(level_file, "%c", stopper_chars[level->stoppers[x + y*GRID_SIZE]]);
+			else
+				fseek(level_file, 1, SEEK_CUR);
 		}
 		fseek(level_file, 1, SEEK_CUR);
 	}
@@ -85,6 +99,10 @@ Level * load_level_from_file(char * path)
 		case '<':
 		case '^':
 		case 'v':
+		case 'a':
+		case 's':
+		case 'd':
+		case 'f':
 		case 'O':
 		case '\n':
 			break;
@@ -124,17 +142,29 @@ Level * load_level_from_file(char * path)
 			case '-':
 				level->walls[x + y * GRID_SIZE] = true;
 				break;
-			case '>':
-				level->arrows[x + y * GRID_SIZE] = D_RIGHT;
+			case '^':
+				level->arrows[x + y * GRID_SIZE] = D_UP;
 				break;
 			case '<':
 				level->arrows[x + y * GRID_SIZE] = D_LEFT;
 				break;
-			case '^':
-				level->arrows[x + y * GRID_SIZE] = D_UP;
-				break;
 			case 'v':
 				level->arrows[x + y * GRID_SIZE] = D_DOWN;
+				break;
+			case '>':
+				level->arrows[x + y * GRID_SIZE] = D_RIGHT;
+				break;
+			case 'a':
+				level->stoppers[x + y * GRID_SIZE] = D_UP;
+				break;
+			case 's':
+				level->stoppers[x + y * GRID_SIZE] = D_LEFT;
+				break;
+			case 'd':
+				level->stoppers[x + y * GRID_SIZE] = D_DOWN;
+				break;
+			case 'f':
+				level->stoppers[x + y * GRID_SIZE] = D_RIGHT;
 				break;
 			default:
 				level->Free();

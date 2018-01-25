@@ -91,6 +91,13 @@ int game_loop(SDL_Surface * screen, SDL_Window * window, bool benchmarking)
 		return 1;
 	}
 
+	for (int y = 0; y < GRID_SIZE; y++) {
+		for (int x = 0; x < GRID_SIZE; x++) {
+			printf("% 2d", level->stoppers[x + y*GRID_SIZE]);
+		}
+		printf("\n");
+	}
+	
 	float  bench_time   = 10.0;
 	double bench_acc    = 0.0;
 	int    bench_count  = 0;
@@ -192,15 +199,17 @@ enum EditorMode {
 	MODE_BOULDER,
 	MODE_PLAYER,
 	MODE_GOAL,
-	MODE_ARROW
+	MODE_ARROW,
+	MODE_STOPPER
 };
 
-char * editor_mode_names[5] = {
+char * editor_mode_names[] = {
 	"wall",
 	"boulder",
 	"player",
 	"goal",
-	"arrow"
+	"arrow",
+	"stopper"
 };
 
 int editor_loop(SDL_Surface * screen, SDL_Window * window)
@@ -239,6 +248,9 @@ int editor_loop(SDL_Surface * screen, SDL_Window * window)
 					break;
 				case SDL_SCANCODE_A:
 					mode = MODE_ARROW;
+					break;
+				case SDL_SCANCODE_T:
+					mode = MODE_STOPPER;
 					break;
 				case SDL_SCANCODE_O:
 					{
@@ -296,6 +308,9 @@ int editor_loop(SDL_Surface * screen, SDL_Window * window)
 				case MODE_ARROW:
 					level->arrows[x + y*GRID_SIZE] = ((level->arrows[x + y*GRID_SIZE] + 2) % 5) - 1;
 					break;
+				case MODE_STOPPER:
+					level->stoppers[x + y*GRID_SIZE] = ((level->stoppers[x + y*GRID_SIZE] + 2) % 5) - 1;
+					break;
 				}
 				break;
 			}
@@ -332,7 +347,7 @@ int main(int argc, char ** argv)
 	SDL_Init(SDL_INIT_VIDEO);
 	TTF_Init();
 	default_font = TTF_OpenFont(find_path("Inconsolata.otf", "resources"), 20);
-
+	
 	GameMode game_mode = GAME;
 	bool benchmarking = false;
 	if (argc > 1) {
@@ -359,15 +374,15 @@ int main(int argc, char ** argv)
 		return 1;
 	}
 
-	if (load_sprite(PLAYER_LEFT,  "16\\player.png")      != 0) return 1;
-	if (load_sprite(PLAYER_RIGHT, "16\\player.png")      != 0) return 1;
-	if (load_sprite(BOULDER,      "16\\boulder.png")     != 0) return 1;
-	if (load_sprite(GOAL,         "16\\goal.png")        != 0) return 1;
-	if (load_sprite(WALL,         "16\\wall.png")        != 0) return 1;
-	if (load_sprite(UP_ARROW,     "16\\up_arrow.png")    != 0) return 1;
-	if (load_sprite(LEFT_ARROW,   "16\\left_arrow.png")      != 0) return 1;
-	if (load_sprite(DOWN_ARROW,   "16\\down_arrow.png")      != 0) return 1;
-	if (load_sprite(RIGHT_ARROW,  "16\\right_arrow.png")     != 0) return 1;
+	if (load_sprite(PLAYER_LEFT,    "16\\player.png")        != 0) return 1;
+	if (load_sprite(PLAYER_RIGHT,   "16\\player.png")        != 0) return 1;
+	if (load_sprite(BOULDER,        "16\\boulder.png")       != 0) return 1;
+	if (load_sprite(GOAL,           "16\\goal.png")          != 0) return 1;
+	if (load_sprite(WALL,           "16\\wall.png")          != 0) return 1;
+	if (load_sprite(UP_ARROW,       "16\\up_arrow.png")      != 0) return 1;
+	if (load_sprite(LEFT_ARROW,     "16\\left_arrow.png")    != 0) return 1;
+	if (load_sprite(DOWN_ARROW,     "16\\down_arrow.png")    != 0) return 1;
+	if (load_sprite(RIGHT_ARROW,    "16\\right_arrow.png")   != 0) return 1;
 	if (load_sprite(UP_STOPPER,     "16\\up_stopper.png")    != 0) return 1;
 	if (load_sprite(LEFT_STOPPER,   "16\\left_stopper.png")  != 0) return 1;
 	if (load_sprite(DOWN_STOPPER,   "16\\down_stopper.png")  != 0) return 1;
