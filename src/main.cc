@@ -7,7 +7,7 @@
 #include "utility.h"
 
 #define SPRITE_PRE "16\\"
-#define SPRITE(val, name) if (load_sprite(val, SPRITE_PRE name) != 0) return 1;
+#define SPRITE(val, name) if (load_sprite(renderer, val, SPRITE_PRE name) != 0) return 1;
 
 TTF_Font * default_font;
 
@@ -26,20 +26,29 @@ void version_check()
 	printf("Linked against SDL version %d.%d.%d\n", linked.major, linked.minor, linked.patch);
 }
 
-int load_sprite(Sprite index, char * name)
+int load_sprite(SDL_Renderer * renderer, Sprite index, char * name)
 {
-	sprites[index] = IMG_Load(find_path(name, "resources"));
-	if (sprites[index] == NULL) {
+	SDL_Surface * load = IMG_Load(find_path(name, "resources"));
+	if (load == NULL) {
 		fprintf(stderr, "Image '%s' did not load correctly.\n", name);
+		return 1;
+	}
+	SDL_Surface * scaled = 
+	//sprites[index] = SDL_CreateTextureFromSurface(renderer, intermediate);
+	SDL_FreeSurface(intermediate);
+	if (sprites[index] == NULL) {
+		fprintf(stderr, "Image '%s' did not convert to SDL_Texture correctly.\n", name);
 		return 1;
 	}
 	return 0;
 }
 
-void scale_sprites(SDL_Surface * screen)
+void scale_sprites(SDL_Renderer * renderer)
 {
 	for (int i = 1; i < SPRITE_COUNT; i++) {
-		SDL_Surface * tile = sprites[i];
+		SDL_Texture * tile = sprites[i];
+		SDL_Texture * scaled = SDL_CreateTexture(renderer, tile->format->format,
+			SDL_TEXTUREACCESS_STATIC, );
 		SDL_Surface * new_sprite = SDL_CreateRGBSurfaceWithFormat(
 			0, tile->w * SCALE_FACTOR, tile->h * SCALE_FACTOR,
 			32, tile->format->format);
@@ -82,11 +91,13 @@ int main(int argc, char ** argv)
 		fprintf(stderr, "Could not create window.\n");
 		return 1;
 	}
+	SDL_Renderer * renderer = SDL_CreateRenderer(window, -1, 0);
+	/*
 	SDL_Surface * screen = SDL_GetWindowSurface(window);
 	if (screen == NULL) {
 		fprintf(stderr, "Count not retrieve screen surface.\n");
 		return 1;
-	}
+		}*/
 
 	// Sprite loading
 	SPRITE(PLAYER_LEFT,    "player.png");
@@ -102,12 +113,12 @@ int main(int argc, char ** argv)
 	SPRITE(LEFT_STOPPER,   "left_stopper.png");
 	SPRITE(DOWN_STOPPER,   "down_stopper.png");
 	SPRITE(RIGHT_STOPPER,  "right_stopper.png");
-
-	scale_sprites(screen);
 	
-	sprites[BACKGROUND] = SDL_CreateRGBSurfaceWithFormat(
-		0, GRID_SIZE * TILE_SIZE * SCALE_FACTOR, GRID_SIZE * TILE_SIZE * SCALE_FACTOR, 32, SDL_PIXELFORMAT_RGBA32);
 	{
+		SDL_Surface * bg_intermediate = SDL_CreateRGBSurfaceWithFormat(
+		0, GRID_SIZE * TILE_SIZE * SCALE_FACTOR,
+		   GRID_SIZE * TILE_SIZE * SCALE_FACTOR,
+		32, SDL_PIXELFORMAT_RGBA32);
 		SDL_Surface * grid_piece = IMG_Load(find_path("16\\ice.png", "resources"));
 		if (grid_piece == NULL) {
 			fprintf(stderr, "Could not load background tile image.\n");
@@ -119,14 +130,15 @@ int main(int argc, char ** argv)
 				pos.x = i * TILE_SIZE * SCALE_FACTOR; pos.y = j * TILE_SIZE * SCALE_FACTOR;
 				pos.w = TILE_SIZE * SCALE_FACTOR;
 				pos.h = TILE_SIZE * SCALE_FACTOR;
-				SDL_BlitScaled(grid_piece, NULL, sprites[BACKGROUND], &pos);
+				SDL_BlitScaled(grid_piece, NULL, bg_intermediate, &pos);
 			}
 		}
 		SDL_FreeSurface(grid_piece);
+		sprites[BACKGROUND] = SDL_CreateTextureFromSurface(renderer, bg_intermediate);
 	}
 
 	if (game_mode == GAME)
-		return game_loop(screen, window, benchmarking);
+		return game_loop(renderer, window, benchmarking);
 	else if (game_mode == EDITOR)
-		return editor_loop(screen, window);
+		return editor_loop(renderer, window);
 }

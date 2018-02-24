@@ -25,7 +25,7 @@ Vector2i mov_queue_pop(MovQueue ** queue)
 	return ret;
 }
 
-int game_loop(SDL_Surface * screen, SDL_Window * window, bool benchmarking)
+int game_loop(SDL_Renderer * renderer, SDL_Window * window, bool benchmarking)
 {
 	int level_count;
 	int lev_i = 0;
@@ -117,19 +117,25 @@ int game_loop(SDL_Surface * screen, SDL_Window * window, bool benchmarking)
 			SDL_SetWindowTitle(window, level_names[lev_i]);
 		}
 		level->Update();
-		//SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0, 0, 0));
-		SDL_BlitSurface(sprites[BACKGROUND], NULL, screen, NULL);
-		level->Draw(screen);
+
+		// Drawing
+		SDL_RenderCopy(renderer, sprites[BACKGROUND], NULL, NULL);
+		level->Draw(renderer);
 		// Draw FPS
+		#if 0
 		{
 			char fps_text[16];
 			SDL_Color color={0xFF, 0x00, 0x00};
 			sprintf(fps_text, "%.2f", 1 / delta_time);
 			SDL_Surface * fps_surf = TTF_RenderText_Solid(
 				default_font, fps_text, color);
-			SDL_BlitSurface(fps_surf, NULL, screen, NULL);
+			SDL_Texture * fps_tex = create_tex_with_access(renderer, fps_surf, SDL_TEXTUREACCESS_STREAMING);
+			SDL_RenderCopy(renderer, fps_tex, NULL, NULL);
+			SDL_FreeSurface(fps_surf);
+			SDL_DestroyTexture(fps_tex); // TODO(pixlark): stream this rather than remaking the texture every frame
 		}
-		SDL_UpdateWindowSurface(window);
+		#endif
+		SDL_RenderPresent(renderer);
 		update_delta_time();
 		if (benchmarking) {
 			bench_time  -= delta_time;

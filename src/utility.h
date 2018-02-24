@@ -145,4 +145,6 @@ char * find_path(char * name, char * directory);
 void update_delta_time();
 void init_delta_time();
 
+SDL_Texture * create_tex_with_access(SDL_Renderer * renderer, SDL_Surface * surf, SDL_TextureAccess access);
+
 #endif

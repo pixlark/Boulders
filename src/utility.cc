@@ -70,3 +70,12 @@ void init_delta_time()
 	last_count = SDL_GetPerformanceCounter();
 	delta_time = 60.0 / SDL_GetPerformanceFrequency();
 }
+
+SDL_Texture * create_tex_with_access(SDL_Renderer * renderer, SDL_Surface * surf, SDL_TextureAccess access)
+{
+	SDL_Texture * texture = SDL_CreateTexture(renderer, surf->format->format, access, surf->w, surf->h);
+	SDL_LockSurface(surf);
+	SDL_UpdateTexture(texture, NULL, surf->pixels, surf->pitch);
+	SDL_UnlockSurface(surf);
+	return texture;
+}

@@ -4,6 +4,6 @@
 #include "level.h"
 #include "loader.h"
 
-int game_loop(SDL_Surface * screen, SDL_Window * window, bool benchmarking);
+int game_loop(SDL_Renderer * renderer, SDL_Window * window, bool benchmarking);
 
 #endif

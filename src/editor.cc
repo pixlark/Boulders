@@ -19,7 +19,7 @@ char * editor_mode_names[] = {
 	"stopper"
 };
 
-int editor_loop(SDL_Surface * screen, SDL_Window * window)
+int editor_loop(SDL_Renderer * renderer, SDL_Window * window)
 {
 	Level * level = load_level_from_file(find_path("default.lev", "levels"));
 	SDL_SetWindowTitle(window, "...");
@@ -124,8 +124,8 @@ int editor_loop(SDL_Surface * screen, SDL_Window * window)
 				break;
 			}
 		}
-		SDL_BlitSurface(sprites[BACKGROUND], NULL, screen, NULL);
-		level->Draw(screen);
+		SDL_RenderCopy(renderer, sprites[BACKGROUND], NULL, NULL);
+		level->Draw(renderer);
 		// Draw FPS | TODO(pixlark): Compress?
 		{
 			char fps_text[16];
@@ -133,7 +133,10 @@ int editor_loop(SDL_Surface * screen, SDL_Window * window)
 			sprintf(fps_text, "%.2f", 1 / delta_time);
 			SDL_Surface * fps_surf = TTF_RenderText_Solid(
 				default_font, fps_text, color);
-			SDL_BlitSurface(fps_surf, NULL, screen, NULL);
+			SDL_Texture * fps_tex = create_tex_with_access(renderer, fps_surf, SDL_TEXTUREACCESS_STREAMING);
+			SDL_RenderCopy(renderer, fps_tex, NULL, NULL);
+			SDL_FreeSurface(fps_surf);
+			SDL_DestroyTexture(fps_tex);
 		}
 		// Draw Mode
 		{
@@ -141,10 +144,13 @@ int editor_loop(SDL_Surface * screen, SDL_Window * window)
 			SDL_Color color={0xFF, 0x00, 0x00};
 			SDL_Surface * mode_surf = TTF_RenderText_Solid(
 				default_font, mode_text, color);
+			SDL_Texture * mode_tex = create_tex_with_access(renderer, mode_surf, SDL_TEXTUREACCESS_STREAMING);
 			SDL_Rect blit_rect = {0, GRID_SIZE * TILE_SIZE * SCALE_FACTOR - 30};
-			SDL_BlitSurface(mode_surf, NULL, screen, &blit_rect);
+			SDL_RenderCopy(renderer, mode_tex, NULL, &blit_rect);
+			SDL_FreeSurface(mode_surf);
+			SDL_DestroyTexture(mode_tex);
 		}
-		SDL_UpdateWindowSurface(window);
+		SDL_RenderPresent(renderer);
 		update_delta_time();		
 	}
 	return 0;

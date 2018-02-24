@@ -1,6 +1,6 @@
 #include "level.h"
 
-SDL_Surface * sprites[SPRITE_COUNT];
+SDL_Texture * sprites[SPRITE_COUNT];
 
 void Boulder::Create(Vector2i pos)
 {
@@ -188,14 +188,14 @@ void Level::Update()
 }
 
 // Assumes you've scaled your coordinates to real position by tile size
-void draw_tile(SDL_Surface * screen, SDL_Surface * tile, int x, int y)
+void draw_tile(SDL_Renderer * renderer, SDL_Texture * tile, int x, int y)
 {
 	SDL_Rect blit_rect;
 	blit_rect.x = x * SCALE_FACTOR; blit_rect.y = y * SCALE_FACTOR;
-	SDL_BlitSurface(tile, NULL, screen, &blit_rect);
+	SDL_RenderCopy(renderer, tile, NULL, &blit_rect);
 }
 
-void Level::Draw(SDL_Surface * screen)
+void Level::Draw(SDL_Renderer * renderer)
 {
 	// Draw walls and arrows
 	for (int y = 0; y < GRID_SIZE; y++) {
@@ -216,7 +216,7 @@ void Level::Draw(SDL_Surface * screen)
 					spr = RIGHT_ARROW;
 					break;
 				}
-				draw_tile(screen, sprites[spr], x * TILE_SIZE, y * TILE_SIZE);
+				draw_tile(renderer, sprites[spr], x * TILE_SIZE, y * TILE_SIZE);
 			}
 			if (stoppers[x + y*GRID_SIZE] != -1) {
 				int spr = -1;
@@ -234,21 +234,21 @@ void Level::Draw(SDL_Surface * screen)
 					spr = RIGHT_STOPPER;
 					break;
 				}
-				draw_tile(screen, sprites[spr], x * TILE_SIZE, y * TILE_SIZE);
+				draw_tile(renderer, sprites[spr], x * TILE_SIZE, y * TILE_SIZE);
 			}
 			if (walls[x + y*GRID_SIZE] == true) {
-				draw_tile(screen, sprites[WALL], x * TILE_SIZE, y * TILE_SIZE);
+				draw_tile(renderer, sprites[WALL], x * TILE_SIZE, y * TILE_SIZE);
 			}
 		}
 	}
 	// Draw goal
-	draw_tile(screen, sprites[GOAL], goal.x * TILE_SIZE, goal.y * TILE_SIZE);
+	draw_tile(renderer, sprites[GOAL], goal.x * TILE_SIZE, goal.y * TILE_SIZE);
 	// Draw boulders
 	for (int i = 0; i < boulders.len; i++) {
-		draw_tile(screen, sprites[BOULDER], boulders[i].drawable.epos.x, boulders[i].drawable.epos.y);
+		draw_tile(renderer, sprites[BOULDER], boulders[i].drawable.epos.x, boulders[i].drawable.epos.y);
 	}
 	// Draw player
-	draw_tile(screen, sprites[player.current_sprite], player.drawable.epos.x, player.drawable.epos.y);
+	draw_tile(renderer, sprites[player.current_sprite], player.drawable.epos.x, player.drawable.epos.y);
 }
 
 Level * Level::Copy()

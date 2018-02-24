@@ -36,7 +36,7 @@ enum Directions {
 	D_RIGHT
 };
 
-extern SDL_Surface * sprites[SPRITE_COUNT];
+extern SDL_Texture * sprites[SPRITE_COUNT];
 
 enum LossCondition {
 	NONE,
@@ -86,7 +86,7 @@ struct Level {
 	void RollBoulder(int i);
 	void Update();
 	bool MovePlayer(Vector2i epos);
-	void Draw(SDL_Surface * screen);
+	void Draw(SDL_Renderer * renderer);
 	Level * Copy();
 };
 
